@@ -47,5 +47,6 @@ dependencies {
     implementation(libs.androidx.dataStore)
     implementation(libs.androidx.dataStore.preferences)
 
+    implementation(project(":Domain"))
 
 }
