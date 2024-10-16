@@ -1,6 +1,6 @@
 [versions]
 agp = "8.3.2"
-kotlin = "1.9.22"
+kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -14,6 +14,7 @@ androidxDataStore = "1.1.1"
 jetbrainsKotlinJvm = "1.9.0"
 okHttp = "4.12.0"
 hilt = "2.51.1"
+coroutine = "1.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 androidx-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+kotlinx-coroutines-test = { group="org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref="coroutine" }
 
 # OkHttp
 okHttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }

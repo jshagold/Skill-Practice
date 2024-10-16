@@ -77,4 +77,5 @@ dependencies {
 
     implementation(project(":Domain"))
 
+    implementation(libs.kotlinx.coroutines.test)
 }
