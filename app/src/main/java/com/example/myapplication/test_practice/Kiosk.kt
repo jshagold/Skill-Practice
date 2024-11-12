@@ -2,10 +2,14 @@ package com.example.myapplication.test_practice
 
 import com.example.myapplication.test_practice.order.Order
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class Kiosk {
 
     private val beverages: MutableList<Beverage> = mutableListOf()
+
+    val openTime: LocalTime = LocalTime.of(10,0)
+    val closeTime: LocalTime = LocalTime.of(22,0)
 
     fun getBeverages(): List<Beverage> = beverages.toList()
 
@@ -30,18 +34,26 @@ class Kiosk {
     fun clear() {
         beverages.clear()
     }
-
-    fun calculateTotalPrice(): Int {
-        var total: Int = 0
-
-        for(beverage in beverages) {
-            total += beverage.getPrice()
-        }
-
-        return total
-    }
+    
 
     fun createOrder(): Order {
-        return Order(orderDateTime = LocalDateTime.now(), beverages = beverages)
+        val currentDateTime = LocalDateTime.now()
+        val currentTime = currentDateTime.toLocalTime()
+        if(currentTime.isBefore(openTime) || currentTime.isAfter(closeTime)) {
+            throw IllegalArgumentException("주문 시간이 아님")
+        }
+
+
+        return Order(orderDateTime = currentDateTime, beverages = beverages)
+    }
+
+    fun createOrder(currentDateTime: LocalDateTime): Order {
+        val currentTime = currentDateTime.toLocalTime()
+        if(currentTime.isBefore(openTime) || currentTime.isAfter(closeTime)) {
+            throw IllegalArgumentException("주문 시간이 아님")
+        }
+
+
+        return Order(orderDateTime = currentDateTime, beverages = beverages)
     }
 }

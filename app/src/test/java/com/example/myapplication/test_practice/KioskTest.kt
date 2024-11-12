@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.ThrowableSubject
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 class KioskTest {
 
@@ -74,6 +75,50 @@ class KioskTest {
         kiosk.clear()
         assertThat(kiosk.getBeverages()).isEmpty()
     }
+
+
+    @Test
+    fun createOrder() {
+        val kiosk = Kiosk()
+        val americano = Americano()
+
+        kiosk.add(americano)
+
+
+        val order = kiosk.createOrder()
+
+        assertThat(order.beverages).hasSize(1)
+        assertThat(order.beverages[0].getName()).isEqualTo("Americano")
+
+    }
+
+    @Test
+    fun createOrderWithTime() {
+        val kiosk = Kiosk()
+        val americano = Americano()
+
+        kiosk.add(americano)
+
+        val order = kiosk.createOrder(LocalDateTime.of(2024,11,13,10,0))
+
+        assertThat(order.beverages).hasSize(1)
+        assertThat(order.beverages[0].getName()).isEqualTo("Americano")
+    }
+
+    @Test
+    fun createOrderAfterClosingTime() {
+        val kiosk = Kiosk()
+        val americano = Americano()
+
+        kiosk.add(americano)
+
+        val expectThrow = assertThrows(IllegalArgumentException::class.java) {
+            kiosk.createOrder(LocalDateTime.of(2024,11,13,9,59))
+        }
+
+        assertThat(expectThrow).hasMessageThat().contains("아님")
+    }
+
 
 
 }
