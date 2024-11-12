@@ -13,6 +13,16 @@ class Kiosk {
         beverages.add(beverage)
     }
 
+    fun add(beverage: Beverage, count: Int) {
+        if(count <= 0) {
+            throw IllegalArgumentException("음료는 1잔 이상부터 주문할수있다.")
+        }
+
+        for(i in 0..count) {
+            beverages.add(beverage)
+        }
+    }
+
     fun remove(beverage: Beverage) {
         beverages.remove(beverage)
     }
