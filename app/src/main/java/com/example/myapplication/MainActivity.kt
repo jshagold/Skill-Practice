@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.example.myapplication.function.FunctionScreen
 import com.example.myapplication.level.LevelScreen
 import com.example.myapplication.sensor.SensorListener
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -35,7 +36,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+//                    Greeting("Android")
+                    FunctionScreen()
                 }
             }
         }
