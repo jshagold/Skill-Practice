@@ -8,7 +8,7 @@ class Kiosk {
 
     private val beverages: MutableList<Beverage> = mutableListOf()
 
-    val openTime: LocalTime = LocalTime.of(10,0)
+    val openTime: LocalTime = LocalTime.of(8,0)
     val closeTime: LocalTime = LocalTime.of(22,0)
 
     fun getBeverages(): List<Beverage> = beverages.toList()
@@ -34,7 +34,7 @@ class Kiosk {
     fun clear() {
         beverages.clear()
     }
-    
+
 
     fun createOrder(): Order {
         val currentDateTime = LocalDateTime.now()
@@ -55,5 +55,9 @@ class Kiosk {
 
 
         return Order(orderDateTime = currentDateTime, beverages = beverages)
+    }
+
+    fun calculateTotlaPrice(): Int {
+        return beverages.stream().mapToInt(Beverage::getPrice).sum()
     }
 }

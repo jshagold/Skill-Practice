@@ -21,8 +21,6 @@ class KioskRunner {
         kiosk.add(Latte())
         println("+++ 라떼")
 
-        val totalPrice = kiosk.calculateTotalPrice()
-        println("총 가격  $totalPrice")
     }
 
 }
