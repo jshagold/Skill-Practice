@@ -11,6 +11,18 @@ import java.time.LocalDateTime
 
 class KioskTest {
 
+
+    @Test
+    fun testSomething() {
+
+        val money = 1000
+
+
+
+    }
+
+
+
     @Test
     fun add_menual_test() {
         val kiosk = Kiosk()

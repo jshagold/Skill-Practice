@@ -124,6 +124,7 @@ class FileDetectingService : Service() {
             MediaStore.Files.FileColumns.DISPLAY_NAME,
             MediaStore.Files.FileColumns.MIME_TYPE,
             MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.OWNER_PACKAGE_NAME,
         )
 
         val cursor = context.contentResolver.query(
@@ -142,13 +143,14 @@ class FileDetectingService : Service() {
                 val fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME))
                 val type = cursor.getStringOrNull(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)) ?: continue
                 val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
+//                val packageName = getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.OWNER_PACKAGE_NAME))
 
                 val contentUri = ContentUris.appendId(
                     MediaStore.Files.getContentUri("external").buildUpon(),
                     id
                 ).build()
 
-                Log.e("TAG", "getFiles: in cursor name=$fileName type=$type uri=$contentUri data=$data")
+                Log.e("TAG", "getFiles: in cursor name=$fileName type=$type uri=$contentUri data=$data\n packageName=$packageName")
 
                 fileInfo = "id=$id fileName=$fileName type=$type uri=$contentUri"
             } while(cursor.moveToNext())
@@ -217,6 +219,39 @@ class FileDetectingService : Service() {
         } else {
             Log.e("TAG", "launchApk: fileUri is null", )
         }
+    }
+
+    fun getPackageNameFromApk(context: Context, uri: Uri): String? {
+        var data: String = ""
+
+        val projection = arrayOf(
+            MediaStore.Files.FileColumns.DATA,
+        )
+
+        val cursor = context.contentResolver.query(
+            uri,
+            projection,
+            null,
+            null,
+            null
+        )
+
+
+        if(cursor != null && cursor.moveToFirst()) {
+
+            do {
+                data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
+            } while(cursor.moveToNext())
+
+            cursor.close()
+        }
+
+
+        val pm = packageManager
+        val packageInfo = pm.getPackageArchiveInfo(data,0)
+
+
+        return packageInfo?.packageName
     }
 
     fun isFileDownloadComplete(context: Context, fileUri: Uri): Boolean {

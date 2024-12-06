@@ -4,18 +4,18 @@ import android.app.DownloadManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.StrictMode
-import android.os.StrictMode.VmPolicy
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Base64
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -46,7 +46,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
@@ -56,7 +55,10 @@ import com.example.myapplication.fileObserver.urlDownloading
 import com.example.myapplication.level.LevelScreen
 import com.example.myapplication.sensor.SensorListener
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.google.common.reflect.Reflection.getPackageName
 import java.io.File
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 
 private val ApkSample: String = "/storage/emulated/0/Download/child_0_9_2.apk"
@@ -171,6 +173,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .clickable {
                                     val apkUri = FileDetectingService.lastUri
+
 
                                     val intent = Intent(Intent.ACTION_VIEW).apply {
                                         setDataAndType(apkUri, "application/vnd.android.package-archive")
@@ -306,6 +309,12 @@ private fun getFiles(context: Context): List<String> {
 fun launchApk(context: Context, uri: String) {
     val apkUri = findApkFile(context, uri)
 
+    val packageName = getPackageNameFromApk(context, apkUri!!)
+    Log.e("TAG", "launchApk: packageName = ${packageName}")
+
+    getHashFromPackageName(context, packageName!!)
+
+
     val intent = Intent(Intent.ACTION_VIEW).apply {
         setDataAndType(apkUri, "application/vnd.android.package-archive")
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -424,3 +433,55 @@ fun findApkFile(context: Context, fileName: String): Uri? {
     return null // 파일을 찾지 못한 경우
 }
 
+
+fun getPackageNameFromApk(context: Context, uri: Uri): String? {
+    var data: String = ""
+
+    val projection = arrayOf(
+        MediaStore.Files.FileColumns.DATA,
+    )
+
+    val cursor = context.contentResolver.query(
+        uri,
+        projection,
+        null,
+        null,
+        null
+    )
+
+
+    if(cursor != null && cursor.moveToFirst()) {
+
+        do {
+            data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
+        } while(cursor.moveToNext())
+
+        cursor.close()
+    }
+
+
+    val pm = context.packageManager
+    val packageInfo = pm.getPackageArchiveInfo(data,0)
+
+
+    return packageInfo?.packageName
+}
+
+
+fun getHashFromPackageName(context: Context, packageName: String) {
+    val packageManager = context.packageManager
+    val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+    for (signature in info.signatures) {
+        val md = MessageDigest.getInstance("SHA")
+        md.update(signature.toByteArray())
+        Log.e("MY KEY HASH:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+    }
+
+    try {
+
+
+    } catch (e: NameNotFoundException) {
+    } catch (e: NoSuchAlgorithmException) {
+    }
+
+}
