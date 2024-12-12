@@ -55,10 +55,9 @@ import com.example.myapplication.fileObserver.urlDownloading
 import com.example.myapplication.level.LevelScreen
 import com.example.myapplication.sensor.SensorListener
 import com.example.myapplication.ui.theme.MyApplicationTheme
-import com.google.common.reflect.Reflection.getPackageName
 import java.io.File
+import java.io.FileInputStream
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 
 private val ApkSample: String = "/storage/emulated/0/Download/child_0_9_2.apk"
@@ -100,16 +99,13 @@ class MainActivity : ComponentActivity() {
                     }
 
                     /** 권한 요청 후 동의 한 경우 **/
-
-                    /** 권한 요청 후 동의 한 경우 **/
                     if(areGranted) {
                         Log.e("TAG", "권한동의: ")
                     }
                     /** 권한 요청 후 거부 한 경우 **/
-                    /** 권한 요청 후 거부 한 경우 **/
                     else {
                         Log.e("TAG", "권한거절: ")
-                        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
+                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                         intent.setData(Uri.parse("package:$packageName"))
                         startActivity(intent)
                     }
@@ -174,12 +170,23 @@ class MainActivity : ComponentActivity() {
                                 .clickable {
                                     val apkUri = FileDetectingService.lastUri
 
+                                    val packageName = getPackageNameFromApk(context, apkUri!!)
+                                    Log.e("TAG", "launchApk: packageName = ${packageName}")
 
-                                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                                        setDataAndType(apkUri, "application/vnd.android.package-archive")
-                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                    }
-                                    context.startActivity(intent)
+                                    getHashFromPackageName(context, packageName!!)
+
+                                    val filePath = getFilePath(context, apkUri)
+                                    getHashFromPath(filePath)
+
+
+//                                    val apkUri = FileDetectingService.lastUri
+//
+//
+//                                    val intent = Intent(Intent.ACTION_VIEW).apply {
+//                                        setDataAndType(apkUri, "application/vnd.android.package-archive")
+//                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                                    }
+//                                    context.startActivity(intent)
                                 }
                         )
 
@@ -309,17 +316,20 @@ private fun getFiles(context: Context): List<String> {
 fun launchApk(context: Context, uri: String) {
     val apkUri = findApkFile(context, uri)
 
-    val packageName = getPackageNameFromApk(context, apkUri!!)
-    Log.e("TAG", "launchApk: packageName = ${packageName}")
+    val filePath = getFilePath(context, apkUri!!)
+    getHashFromPath(filePath)
 
-    getHashFromPackageName(context, packageName!!)
+//    val packageName = getPackageNameFromApk(context, apkUri)
+//    Log.e("TAG", "launchApk: packageName = ${packageName}")
+//
+//    getHashFromPackageName(context, packageName!!)
 
 
-    val intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(apkUri, "application/vnd.android.package-archive")
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-    }
-    context.startActivity(intent)
+//    val intent = Intent(Intent.ACTION_VIEW).apply {
+//        setDataAndType(apkUri, "application/vnd.android.package-archive")
+//        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+//    }
+//    context.startActivity(intent)
 }
 
 fun getFileList(context: Context): List<String> {
@@ -370,6 +380,9 @@ fun FileScreen() {
             Text(
                 text = appState[it],
                 modifier = Modifier
+                    .clickable {
+                        launchApk(context, appState[it])
+                    }
             )
         }
     }
@@ -437,9 +450,7 @@ fun findApkFile(context: Context, fileName: String): Uri? {
 fun getPackageNameFromApk(context: Context, uri: Uri): String? {
     var data: String = ""
 
-    val projection = arrayOf(
-        MediaStore.Files.FileColumns.DATA,
-    )
+    val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
 
     val cursor = context.contentResolver.query(
         uri,
@@ -448,7 +459,6 @@ fun getPackageNameFromApk(context: Context, uri: Uri): String? {
         null,
         null
     )
-
 
     if(cursor != null && cursor.moveToFirst()) {
 
@@ -469,19 +479,64 @@ fun getPackageNameFromApk(context: Context, uri: Uri): String? {
 
 
 fun getHashFromPackageName(context: Context, packageName: String) {
-    val packageManager = context.packageManager
-    val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-    for (signature in info.signatures) {
-        val md = MessageDigest.getInstance("SHA")
-        md.update(signature.toByteArray())
-        Log.e("MY KEY HASH:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+    Log.e("TAG", "getHashFromPackageName: ", )
+    try {
+        val packageManager = context.packageManager
+        val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+
+        for (signature in info.signingInfo.apkContentsSigners) {
+            val md = MessageDigest.getInstance("SHA-256")
+            md.update(signature.toByteArray())
+            Log.e("MY KEY HASH:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+        }
+    } catch (e: NameNotFoundException) {
+        e.stackTraceToString()
+    }
+}
+
+fun getFilePath(context: Context, uri: Uri): String {
+    var filePath: String = ""
+
+    val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+
+    val cursor = context.contentResolver.query(
+        uri,
+        projection,
+        null,
+        null,
+        null
+    )
+
+    if(cursor != null && cursor.moveToFirst()) {
+        filePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
+        cursor.close()
     }
 
+    return filePath
+}
+
+fun getHashFromPath(apkPath: String) {
+    Log.e("TAG", "getHashFromPath: ", )
     try {
+        val file: File = File(apkPath)
+        val fis = FileInputStream(file)
+        val digest = MessageDigest.getInstance("SHA-256") // SHA-1 또는 MD5도 가능
+        val buffer = ByteArray(1024)
+        var bytesRead: Int
+        while (fis.read(buffer).also { bytesRead = it } != -1) {
+            digest.update(buffer, 0, bytesRead)
+        }
+        fis.close()
+        val hashBytes = digest.digest()
+        val hashString = StringBuilder()
+        for (b in hashBytes) {
+            hashString.append(String.format("%02x", b))
+        }
 
+        Log.e("MY KEY HASH:", hashString.toString())
 
-    } catch (e: NameNotFoundException) {
-    } catch (e: NoSuchAlgorithmException) {
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 
 }
