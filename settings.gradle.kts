@@ -23,3 +23,4 @@ rootProject.name = "My Application"
 include(":app")
 include(":datastore")
 include(":Domain")
+include(":market")

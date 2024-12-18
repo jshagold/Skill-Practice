@@ -66,6 +66,7 @@ hilt-android-compiler = { group="com.google.dagger", name="hilt-android-compiler
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 jetbrainsKotlinKapt = { id="org.jetbrains.kotlin.kapt", version.ref="kotlin" }
