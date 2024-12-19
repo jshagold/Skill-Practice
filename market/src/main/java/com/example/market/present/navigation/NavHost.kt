@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.market.present.ui.basket.BasketRoute
 import com.example.market.present.ui.home.HomeRoute
 import com.example.market.present.ui.interest.InterestRoute
+import com.example.market.present.ui.profile.ProfileRoute
 
 @Composable
 fun MainNavHost(
@@ -27,15 +29,20 @@ fun MainNavHost(
             HomeRoute()
         }
 
-        composable(route = Route.BASKET) {  }
+        composable(route = Route.BASKET) {
+            BasketRoute()
+        }
 
         composable(route = Route.INTEREST) {
             InterestRoute()
         }
 
+        composable(route = Route.PROFILE) {
+            ProfileRoute()
+        }
+
         composable(route = Route.PAYMENT) {  }
         composable(route = Route.PRODUCT) {  }
-        composable(route = Route.PROFILE) {  }
         composable(route = Route.SEARCH) {  }
     }
 }

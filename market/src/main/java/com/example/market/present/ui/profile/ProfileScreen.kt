@@ -1,4 +1,4 @@
-package com.example.market.present.ui.home
+package com.example.market.present.ui.profile
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -7,17 +7,16 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun PreviewHomeScreen() {
-    HomeScreen()
-}
-
-
-@Composable
-fun HomeRoute() {
-    HomeScreen()
+fun PreviewProfileScreen() {
+    ProfileScreen()
 }
 
 @Composable
-fun HomeScreen() {
-    Text(text = "Home")
+fun ProfileRoute() {
+    ProfileScreen()
+}
+
+@Composable
+fun ProfileScreen() {
+    Text(text = "Profile")
 }
