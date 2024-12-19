@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Market</string>
+
+    <string name="bottom_nav_home">홈</string>
+    <string name="bottom_nav_interest">관심</string>
+    <string name="bottom_nav_profile">프로필</string>
+    <string name="bottom_nav_basket">장바구니</string>
+
 </resources>

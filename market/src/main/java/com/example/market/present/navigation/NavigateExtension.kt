@@ -22,6 +22,30 @@ fun NavController.navigateToHome() {
 }
 
 /**
+ * Interest 화면으로 이동
+ */
+fun NavController.navigateToInterest() {
+    val navController = this
+    this.navigate(Route.INTEREST) {
+        popUpTo(navController.graph.id) {
+            inclusive = false
+        }
+    }
+}
+
+/**
+ * Basket 화면으로 이동
+ */
+fun NavController.navigateToBasket() {
+    val navController = this
+    this.navigate(Route.BASKET) {
+        popUpTo(navController.graph.id) {
+            inclusive = false
+        }
+    }
+}
+
+/**
  * Profile 화면으로 이동
  */
 fun NavController.navigateToProfile() {
