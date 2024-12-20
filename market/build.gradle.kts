@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.example.market"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.example.market"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
@@ -62,6 +62,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     // Test
     testImplementation(libs.junit)
@@ -81,20 +88,13 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockk)
 
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.okHttp)
 
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
-    implementation(project(":Domain"))
+    // Navigation-Compose
+    implementation(libs.navigation.compose)
 
-    implementation(libs.kotlinx.coroutines.test)
+
 }
