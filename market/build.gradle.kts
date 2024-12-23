@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinKapt)
     alias(libs.plugins.googleDaggerHiltAndroid)
     alias(libs.plugins.junit5)
+
+    // ksp
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -88,6 +91,11 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockk)
 
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.room.paging)
 
     // Hilt
     implementation(libs.hilt.android)

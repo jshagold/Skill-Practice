@@ -7,4 +7,5 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinKapt) apply false
     alias(libs.plugins.googleDaggerHiltAndroid) apply false
     alias(libs.plugins.junit5) apply false
+    alias(libs.plugins.ksp) apply false
 }
