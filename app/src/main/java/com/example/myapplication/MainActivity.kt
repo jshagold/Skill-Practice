@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.Manifest
 import android.app.DownloadManager
 import android.content.ContentUris
 import android.content.Context
@@ -45,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
@@ -55,6 +57,7 @@ import com.example.myapplication.fileObserver.urlDownloading
 import com.example.myapplication.level.LevelScreen
 import com.example.myapplication.sensor.SensorListener
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.wifi.DetectWifiInfo
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
@@ -189,6 +192,8 @@ class MainActivity : ComponentActivity() {
 //                                    context.startActivity(intent)
                                 }
                         )
+
+                        DetectWifiInfo()
 
                         FileScreen()
 
