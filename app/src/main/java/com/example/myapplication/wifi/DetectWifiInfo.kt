@@ -103,10 +103,10 @@ suspend fun currentConnectedWifiName(context: Context) : String? {
 
 
         val connectivityManager: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//        connectivityManager.requestNetwork(request, networkCallback)
-//        while (wifiInfo == null) {
-//            delay(500)
-//        }
+        connectivityManager.requestNetwork(request, networkCallback)
+        while (wifiInfo == null) {
+            delay(500)
+        }
         connectivityManager.registerNetworkCallback(request, networkCallback)
 
         return wifiInfo?.ssid

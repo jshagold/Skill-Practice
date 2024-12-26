@@ -108,9 +108,11 @@ class MainActivity : ComponentActivity() {
                     /** 권한 요청 후 거부 한 경우 **/
                     else {
                         Log.e("TAG", "권한거절: ")
-                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                        intent.setData(Uri.parse("package:$packageName"))
-                        startActivity(intent)
+                        Log.e("TAG", "onCreate: $permission")
+//                        requestPermissions(getCommonPermissionList(), 1001)
+//                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+//                        intent.setData(Uri.parse("package:$packageName"))
+//                        startActivity(intent)
                     }
                 }
 
@@ -130,6 +132,8 @@ class MainActivity : ComponentActivity() {
                             text = "permission",
                             modifier = Modifier
                                 .clickable {
+//                                    requestPermissions(getCommonPermissionList(), 1001)
+
                                     checkAndRequestPermissions(
                                         context = context,
                                         permissions = getCommonPermissionList(),
@@ -404,16 +408,16 @@ fun checkAndRequestPermissions(
         Log.d("TAG", "checkAndRequestPermissions: 권한이 이미 존재한다.")
         onNextGranted()
     } else {
-        launcher.launch(permissions)
         Log.d("TAG", "checkAndRequestPermissions: 권한 요청")
+        launcher.launch(permissions)
     }
 }
 
 fun getCommonPermissionList(): Array<String> {
     val permissionList: MutableList<String> = mutableListOf()
 
-
     permissionList.addAll(callPermissionArray29)
+    permissionList.addAll(callPermissionArray33)
 
     return permissionList.toTypedArray()
 }
@@ -421,6 +425,14 @@ fun getCommonPermissionList(): Array<String> {
 @RequiresApi(Build.VERSION_CODES.R)
 private val callPermissionArray29 = arrayOf(
     Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+)
+
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+private val callPermissionArray33 = arrayOf(
+    Manifest.permission.NEARBY_WIFI_DEVICES,
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION
 )
 
 
@@ -484,7 +496,7 @@ fun getPackageNameFromApk(context: Context, uri: Uri): String? {
 
 
 fun getHashFromPackageName(context: Context, packageName: String) {
-    Log.e("TAG", "getHashFromPackageName: ", )
+    Log.e("TAG", "getHashFromPackageName: ")
     try {
         val packageManager = context.packageManager
         val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
@@ -521,7 +533,7 @@ fun getFilePath(context: Context, uri: Uri): String {
 }
 
 fun getHashFromPath(apkPath: String) {
-    Log.e("TAG", "getHashFromPath: ", )
+    Log.e("TAG", "getHashFromPath: ")
     try {
         val file: File = File(apkPath)
         val fis = FileInputStream(file)
@@ -545,3 +557,5 @@ fun getHashFromPath(apkPath: String) {
     }
 
 }
+
+
