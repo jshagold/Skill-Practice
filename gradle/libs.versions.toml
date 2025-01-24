@@ -29,6 +29,8 @@ gson_version = "2.11.0"
 coil_version = "2.6.0"
 constraintLayout_version = "1.1.0"
 composePagecurl_version = "1.5.1"
+viewModel_version = "2.8.7"
+hiltNav_Version = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -76,6 +78,7 @@ hilt-android-compiler = { group="com.google.dagger", name="hilt-android-compiler
 
 # Navigation-Compose
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref="nav_Version" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref="hiltNav_Version" }
 
 # Room
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
@@ -92,8 +95,13 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name="constra
 # Coil
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil_version" }
 
+# compose-ViewModel
+compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModel_version" }
+
 # compose-pagecurl
 compose-pagecurl = { group = "io.github.oleksandrbalan", name = "pagecurl", version.ref = "composePagecurl_version" }
+
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

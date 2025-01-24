@@ -5,7 +5,7 @@ object Route {
     const val SEARCH = "Search"
     const val BASKET = "Basket"
     const val PROFILE = "Profile"
-    const val INTEREST = "Interest"
+    const val CATEGORY = "Category"
     const val PRODUCT = "Product"
     const val PAYMENT = "Payment"
 }

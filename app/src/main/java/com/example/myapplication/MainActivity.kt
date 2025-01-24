@@ -256,7 +256,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        startForegroundService(Intent(this, FileDetectingService::class.java))
     }
 }
 

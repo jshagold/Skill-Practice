@@ -1,4 +1,4 @@
-package com.example.market.present
+package com.example.market.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

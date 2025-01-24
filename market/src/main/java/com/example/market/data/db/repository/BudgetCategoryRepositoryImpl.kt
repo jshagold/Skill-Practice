@@ -1,5 +1,6 @@
 package com.example.market.data.db.repository
 
+import android.util.Log
 import com.example.market.data.db.converter.toDomainModel
 import com.example.market.data.db.converter.toEntity
 import com.example.market.data.db.dao.BudgetCategoryDao
@@ -21,6 +22,7 @@ class BudgetCategoryRepositoryImpl @Inject constructor(
 
     override fun getAllCategory(): Flow<List<BudgetCategory>> {
         return flow {
+            Log.e("TAG", "getAllCategory: ${budgetCategoryDao.getAllCategory()}", )
             emit(
                 budgetCategoryDao.getAllCategory().map{
                     it.toDomainModel()

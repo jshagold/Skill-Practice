@@ -103,9 +103,13 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Navigation-Compose
     implementation(libs.navigation.compose)
+
+    // ConstraintLayout
+    implementation(libs.androidx.constraintlayout)
 
 
 }

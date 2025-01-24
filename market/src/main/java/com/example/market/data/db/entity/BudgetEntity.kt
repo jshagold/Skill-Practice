@@ -22,5 +22,5 @@ data class BudgetEntity(
     val inputDateTime: String,
 ) {
     @PrimaryKey(autoGenerate = true)
-    val budgetId: Long = 0
+    var budgetId: Long = 0
 }

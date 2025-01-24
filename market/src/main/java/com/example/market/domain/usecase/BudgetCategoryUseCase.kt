@@ -2,6 +2,7 @@ package com.example.market.domain.usecase
 
 import com.example.market.domain.model.BudgetCategory
 import com.example.market.domain.repository.BudgetCategoryRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BudgetCategoryUseCase @Inject constructor(
@@ -12,4 +13,7 @@ class BudgetCategoryUseCase @Inject constructor(
         budgetCategoryRepository.createCategory(BudgetCategory(categoryName))
     }
 
+    fun getAllCategory(): Flow<List<BudgetCategory>> {
+        return budgetCategoryRepository.getAllCategory()
+    }
 }

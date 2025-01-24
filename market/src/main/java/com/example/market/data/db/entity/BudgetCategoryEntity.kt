@@ -8,5 +8,5 @@ data class BudgetCategoryEntity(
     val categoryName: String,
 ) {
     @PrimaryKey(autoGenerate = true)
-    val categoryId: Int = 0
+    var categoryId: Int = 0
 }

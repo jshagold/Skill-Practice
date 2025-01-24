@@ -26,7 +26,7 @@ fun NavController.navigateToHome() {
  */
 fun NavController.navigateToInterest() {
     val navController = this
-    this.navigate(Route.INTEREST) {
+    this.navigate(Route.CATEGORY) {
         popUpTo(navController.graph.id) {
             inclusive = false
         }
