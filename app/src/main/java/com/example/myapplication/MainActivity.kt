@@ -1,210 +1,257 @@
 package com.example.myapplication
 
-import android.Manifest
-import android.app.DownloadManager
-import android.content.ContentUris
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.NameNotFoundException
-import android.hardware.Sensor
-import android.hardware.SensorManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.provider.Settings
-import android.util.Base64
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.nativeKeyCode
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.database.getStringOrNull
-import androidx.core.net.toUri
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.myapplication.compose.pager.FlipPager
+import com.example.myapplication.compose.pager.offsetForPage
 import com.example.myapplication.fileObserver.FileDetectingService
-import com.example.myapplication.fileObserver.urlDownloading
-import com.example.myapplication.level.LevelScreen
-import com.example.myapplication.sensor.SensorListener
 import com.example.myapplication.ui.theme.MyApplicationTheme
-import com.example.myapplication.wifi.DetectWifiInfo
-import java.io.File
-import java.io.FileInputStream
-import java.security.MessageDigest
-
-
-private val ApkSample: String = "/storage/emulated/0/Download/child_0_9_2.apk"
+import eu.wewox.pagecurl.ExperimentalPageCurlApi
+import eu.wewox.pagecurl.page.PageCurl
+import eu.wewox.pagecurl.page.rememberPageCurlState
+import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
+import kotlin.math.min
+import kotlin.math.sqrt
 
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalPageCurlApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val builder = VmPolicy.Builder()
-//        StrictMode.setVmPolicy(builder.build())
-
         setContent {
             MyApplicationTheme {
+                val scrollState = rememberScrollState()
                 
-                val launcherMultiplePermissions = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) {permissionsMap ->
-                    val mapCollection = permissionsMap.values
-                    val areGranted: Boolean = if(mapCollection.isNotEmpty()) {
-                        mapCollection.reduce { acc, next -> acc && next }
-                    } else {
-                        false
-                    }
-
-                    val permission = if (permissionsMap.isNotEmpty()) {
-                        val value = permissionsMap
-                            .asSequence()
-                            .filter {
-                                !it.value
-                            }.firstNotNullOfOrNull {
-                                it.key
-                            }
-                        if(value.isNullOrEmpty()) {
-                            ""
-                        } else {
-                            value
-                        }
-                    } else {
-                        ""
-                    }
-
-                    /** 권한 요청 후 동의 한 경우 **/
-                    if(areGranted) {
-                        Log.e("TAG", "권한동의: ")
-                    }
-                    /** 권한 요청 후 거부 한 경우 **/
-                    else {
-                        Log.e("TAG", "권한거절: ")
-                        Log.e("TAG", "onCreate: $permission")
-//                        requestPermissions(getCommonPermissionList(), 1001)
-//                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-//                        intent.setData(Uri.parse("package:$packageName"))
-//                        startActivity(intent)
-                    }
-                }
-
-
-
-                val context = LocalContext.current
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .verticalScroll(scrollState)
                     ){
-                        Text(
-                            text = "permission",
-                            modifier = Modifier
-                                .clickable {
-//                                    requestPermissions(getCommonPermissionList(), 1001)
 
-                                    checkAndRequestPermissions(
-                                        context = context,
-                                        permissions = getCommonPermissionList(),
-                                        launcher = launcherMultiplePermissions,
-                                        onNextGranted = {
+                        val pages = listOf("One","Two","Three","Four")
+                        val pageState = rememberPageCurlState()
+                        val coroutineScope = rememberCoroutineScope()
+                        PageCurl(
+                            modifier = Modifier
+                                .size(400.dp)
+                                .focusable()
+                                .onKeyEvent { keyEvent ->
+                                    Log.e("TAG", "CubePager onKeyEvent $keyEvent")
+
+                                    if(keyEvent.type == KeyEventType.KeyDown) {
+                                        when(keyEvent.key) {
+                                            Key.DirectionLeft -> {
+                                                coroutineScope.launch {
+                                                    pageState.prev()
+                                                }
+                                                true
+                                            }
+
+                                            Key.DirectionRight -> {
+                                                coroutineScope.launch {
+                                                    pageState.next()
+                                                }
+                                                true
+                                            }
+
+                                            else -> false
                                         }
+                                    } else {
+                                        false
+                                    }
+                                }
+                            ,
+                            count = pages.size,
+                            state = pageState
+                        ) { index ->
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .fillMaxSize()
+                            ) {
+                                AsyncImage(
+                                    model = "https://picsum.photos/id/$index/300/300",
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+
+                                )
+
+                                Text(
+                                    text = "$index", style = MaterialTheme.typography.headlineLarge.copy(
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        shadow = Shadow(
+                                            color = Color.Black.copy(alpha = .6f),
+                                            blurRadius = 30f,
+                                        )
                                     )
-                                }
-                        )
+                                )
+                            }
+                        }
 
-
-                        Text(
-                            text = "test",
-                            modifier = Modifier
-                                .clickable {
-                                    getApkList(context)
-                                    sendBroadcast(Intent(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-                                }
-                        )
-
-                        Text(
-                            text = "download",
-                            modifier = Modifier
-                                .clickable {
-                                    urlDownloading(context, "https://picsum.photos/200/300".toUri())
-                                }
-                        )
-
-                        Text(
-                            text = "launch",
-                            modifier = Modifier
-                                .clickable {
-                                    launchApk(context, "child_0_9_2.apk")
-//                                    Log.e("TAG", "onCreate: findapkfile ${findApkFile(context, "child_0_9_2.apk")}")
-                                }
-                        )
-
-                        Text(
-                            text = "service uri launch",
-                            modifier = Modifier
-                                .clickable {
-                                    val apkUri = FileDetectingService.lastUri
-
-                                    val packageName = getPackageNameFromApk(context, apkUri!!)
-                                    Log.e("TAG", "launchApk: packageName = ${packageName}")
-
-                                    getHashFromPackageName(context, packageName!!)
-
-                                    val filePath = getFilePath(context, apkUri)
-                                    getHashFromPath(filePath)
-
-
-//                                    val apkUri = FileDetectingService.lastUri
+//                        ConstraintLayout(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                        ) {
+//                            val (left, right) = createRefs()
 //
-//
-//                                    val intent = Intent(Intent.ACTION_VIEW).apply {
-//                                        setDataAndType(apkUri, "application/vnd.android.package-archive")
-//                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                            Text(
+//                                text = "left",
+//                                textAlign = TextAlign.Center,
+//                                modifier = Modifier
+//                                    .constrainAs(left) {
+//                                        start.linkTo(parent.start)
+//                                        end.linkTo(right.start)
+//                                        width = Dimension.fillToConstraints
 //                                    }
-//                                    context.startActivity(intent)
-                                }
-                        )
+//                                    .clickable {
+//                                        coroutineScope.launch {
+//                                            pageState.prev()
+//                                        }
+//                                    }
+//                            )
+//                            Text(
+//                                text = "right",
+//                                textAlign = TextAlign.Center,
+//                                modifier = Modifier
+//                                    .constrainAs(right) {
+//                                        start.linkTo(left.end)
+//                                        end.linkTo(parent.end)
+//                                        width = Dimension.fillToConstraints
+//                                    }
+//                                    .clickable {
+//                                        coroutineScope.launch {
+//                                            pageState.next()
+//                                        }
+//                                    }
+//                            )
+//                        }
 
-                        DetectWifiInfo()
 
-                        FileScreen()
 
-//                        FunctionScreen()
+//                        val state = rememberPagerState(pageCount = { 9 })
+//
+//                        FlipPager(
+//                            state = state,
+//                            modifier = Modifier.fillMaxWidth().weight(1f),
+//                        ) { page ->
+//                            Box(
+//                                modifier = Modifier
+//                                    .padding(16.dp)
+//                                    .clip(RoundedCornerShape(16.dp)),
+//                            ) {
+//                                AsyncImage(
+//                                    model = "https://picsum.photos/id/$page/300/300",
+//                                    contentDescription = null,
+//                                    contentScale = ContentScale.Crop,
+//                                    modifier = Modifier.fillMaxSize()
+//                                )
+//
+//                                Text(
+//                                    text = "$page", style = MaterialTheme.typography.headlineLarge.copy(
+//                                        color = Color.White,
+//                                        fontWeight = FontWeight.Bold,
+//                                        shadow = Shadow(
+//                                            color = Color.Black.copy(alpha = .6f),
+//                                            blurRadius = 30f,
+//                                        )
+//                                    )
+//                                )
+//                            }
+//                        }
+
+//                        MainScreen()
+
+//                        FlipPagerPractice()
+
+//                        CubePager()
+//
+//                        BookTurnOverEffect()
+
                     }
-
-
                 }
             }
         }
@@ -214,348 +261,290 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+fun BookTurnOverEffect() {
+    var isTurned by remember { mutableStateOf(false) }
+    val rotationY by animateFloatAsState(if (isTurned) 180f else 0f, label = "")
 
-    val mageticValue = remember { mutableDoubleStateOf(0.0) }
-    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    val sensorMagnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
-    val sensorEventListener = SensorListener(mageticValue)
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when(event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    sensorManager.registerListener(sensorEventListener, sensorMagnetic, SensorManager.SENSOR_DELAY_NORMAL)
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        BookPage(rotationY) {
+            isTurned = !isTurned
+        }
+    }
+}
+
+@Composable
+fun BookPage(rotationY2: Float, onClick: () -> Unit) {
+    androidx.compose.foundation.Canvas(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .clipToBounds()
+            .graphicsLayer {
+                rotationY = rotationY2.absoluteValue
+                cameraDistance = 8 * density
+            }
+            .background(Color.LightGray)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { onClick() }
+                )
+            }
+    ) {
+        // Draw the page content here
+        drawRect(color = Color.Blue)
+    }
+}
+
+
+@Composable
+fun CubePager() {
+    val scrollState = rememberScrollState()
+
+    val pagerState = rememberPagerState(pageCount = { 9 })
+    val coroutineScope = rememberCoroutineScope()
+
+    var currentPage by remember { mutableStateOf(0) }
+
+    var offsetY by remember { mutableStateOf(0f) }
+
+    val scale by remember {
+        derivedStateOf {
+            1f - (pagerState.currentPageOffsetFraction.absoluteValue) * .3f
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ){
+        Box(
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+            ) { page ->
+                currentPage = page
+                Box(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            val pageOffset = pagerState.offsetForPage(page)
+                            val offScreenRight = pageOffset < 0f
+                            val deg = 105f
+                            val interpolated = FastOutLinearInEasing.transform(pageOffset)
+                            rotationY = min(interpolated * if (offScreenRight) deg else -deg, 90f)
+
+                            transformOrigin = TransformOrigin(
+                                pivotFractionX = if (offScreenRight) 0f else 1f,
+                                pivotFractionY = .5f
+                            )
+                        }
+                        .drawWithContent {
+                            val pageOffset = pagerState.offsetForPage(page)
+
+                            this.drawContent()
+                            drawRect(
+                                Color.Black.copy(
+                                    (pageOffset.absoluteValue * .7f)
+                                )
+                            )
+                        }
+                        .background(Color.LightGray)
+                        .focusable()
+                        .onFocusChanged { focusState ->
+                            Log.e("TAG", "CubePager Focused: page=$page")
+                            if (focusState.isFocused) {
+                                // 포커스가 이동하면 해당 페이지로 스크롤
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        page = page,
+                                        animationSpec = tween(durationMillis = 1000)
+                                    )
+                                }
+                            }
+                        }
+                        .clickable {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(
+                                    page = page + 1,
+                                    animationSpec = tween(durationMillis = 1000)
+                                )
+                            }
+                        }
+                    ,
+//                    .graphicsLayer {
+//                        // MAKE THE PAGE NOT MOVE
+//                        val pageOffset = state.offsetForPage(page)
+//                        translationX = size.width * pageOffset
+//
+//                        // ADD THE CIRCULAR CLIPPING
+//                        val endOffset = state.endOffsetForPage(page)
+//
+//                        shadowElevation = 20f
+//                        shape = CirclePath(
+//                            progress = 1f - endOffset.absoluteValue,
+//                            origin = Offset(
+//                                size.width,
+//                                offsetY,
+//                            )
+//                        )
+//                        clip = true
+//
+//                        // PARALLAX SCALING
+//                        val absoluteOffset = state.offsetForPage(page).absoluteValue
+//                        val scale = 1f + (absoluteOffset.absoluteValue * .4f)
+//
+//                        scaleX = scale
+//                        scaleY = scale
+//
+//                        // FADE AWAY
+//                        val startOffset = state.startOffsetForPage(page)
+//                        alpha = (2f - startOffset) / 2f
+//
+//                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = "https://picsum.photos/id/$page/300/300",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    Text(
+                        text = "Hello", style = MaterialTheme.typography.headlineLarge.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            shadow = Shadow(
+                                color = Color.Black.copy(alpha = .6f),
+                                blurRadius = 30f,
+                            )
+                        )
+                    )
                 }
-                Lifecycle.Event.ON_PAUSE -> {}
-                Lifecycle.Event.ON_STOP -> {}
-                Lifecycle.Event.ON_DESTROY -> {
-                    sensorManager.unregisterListener(sensorEventListener)
-                }
-                else -> {}
             }
         }
 
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
-    Column {
         Text(
-            text = "Hello ${mageticValue.doubleValue}!",
-            modifier = modifier
+            text = "currentpage: $currentPage",
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
         )
 
-        LevelScreen()
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyApplicationTheme {
-        Column(
+        ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Greeting("Android")
-        }
-    }
-}
+            val (left, right) = createRefs()
 
-fun getApkList(context: Context) {
-    val pm = context.packageManager
-    val pkgInfo = pm.getPackageArchiveInfo(ApkSample,0)
-
-    Log.e("TAG", "getApkList: ${pkgInfo?.versionName}")
-
-}
-
-@RequiresApi(Build.VERSION_CODES.Q)
-private fun getFiles(context: Context): List<String> {
-
-    val fileList: MutableList<String> = mutableListOf()
-
-    val projection = arrayOf(
-        MediaStore.Files.FileColumns._ID,
-        MediaStore.Files.FileColumns.DISPLAY_NAME,
-        MediaStore.Files.FileColumns.MIME_TYPE,
-    )
-
-    val cursor = context.contentResolver.query(
-        MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-        projection,
-        null,
-        null,
-        null
-    )
-
-    if(cursor != null && cursor.moveToFirst()) {
-
-        do {
-            val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID))
-            val fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME))
-            val type = cursor.getStringOrNull(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)) ?: continue
-
-            val contentUri = ContentUris.appendId(
-                MediaStore.Files.getContentUri("external").buildUpon(),
-                id
-            ).build()
-
-            Log.e("TAG", "getFiles: in cursor name=$fileName type=$type uri=$contentUri")
-
-            fileList.add(fileName)
-//            fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-        } while(cursor.moveToNext())
-
-        cursor.close()
-    }
-
-    return fileList
-}
-
-
-
-fun launchApk(context: Context, uri: String) {
-    val apkUri = findApkFile(context, uri)
-
-    val filePath = getFilePath(context, apkUri!!)
-    getHashFromPath(filePath)
-
-//    val packageName = getPackageNameFromApk(context, apkUri)
-//    Log.e("TAG", "launchApk: packageName = ${packageName}")
-//
-//    getHashFromPackageName(context, packageName!!)
-
-
-//    val intent = Intent(Intent.ACTION_VIEW).apply {
-//        setDataAndType(apkUri, "application/vnd.android.package-archive")
-//        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-//    }
-//    context.startActivity(intent)
-}
-
-fun getFileList(context: Context): List<String> {
-    val outputFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()
-
-
-    val file = File(Environment.getExternalStorageDirectory().toString() + "/Download")
-    val fileList = file.listFiles()
-    val fileList2 = file.list()
-
-    return fileList2.map {
-        it
-    }
-
-    Log.e("TAG", "getFileList: path=$outputFilePath")
-
-    return fileList.map {
-        Log.d("TAG", "getFileList: path=${it.path}")
-//        Log.d("TAG", "getFileList: uri=${getImageContentUri(context,it.path)}")
-        it.name
-    }
-}
-
-
-@RequiresApi(Build.VERSION_CODES.Q)
-@Composable
-fun FileScreen() {
-
-    val context = LocalContext.current
-
-    val appState by remember { mutableStateOf(getFiles(context)) }
-
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(max = (appState.size * 200).dp)
-            .background(Color.Gray)
-//            .verticalScroll(scrollState)
-    ) {
-        item {
             Text(
-                text = "size:${appState.size}\n\n",
-            )
-        }
-
-        items(appState.size) {
-            Text(
-                text = appState[it],
+                text = "left",
+                textAlign = TextAlign.Center,
                 modifier = Modifier
+                    .constrainAs(left) {
+                        start.linkTo(parent.start)
+                        end.linkTo(right.start)
+                        width = Dimension.fillToConstraints
+                    }
                     .clickable {
-                        launchApk(context, appState[it])
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                page = currentPage - 1,
+                                animationSpec = tween(durationMillis = 1000)
+                            )
+                        }
+                    }
+            )
+            Text(
+                text = "right",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .constrainAs(right) {
+                        start.linkTo(left.end)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .clickable {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                page = currentPage + 1,
+                                animationSpec = tween(durationMillis = 1000)
+                            )
+                        }
                     }
             )
         }
     }
-
 }
 
-fun checkAndRequestPermissions(
-    context: Context,
-    permissions: Array<String>,
-    launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>,
-    onNextGranted: () -> Unit
-) {
-    if(permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
-        Log.d("TAG", "checkAndRequestPermissions: 권한이 이미 존재한다.")
-        onNextGranted()
-    } else {
-        Log.d("TAG", "checkAndRequestPermissions: 권한 요청")
-        launcher.launch(permissions)
+class CirclePath(private val progress: Float, private val origin: Offset = Offset(0f, 0f)) : Shape {
+    override fun createOutline(
+        size: Size, layoutDirection: LayoutDirection, density: Density
+    ): Outline {
+
+        val center = Offset(
+            x = size.center.x - ((size.center.x - origin.x) * (1f - progress)),
+            y = size.center.y - ((size.center.y - origin.y) * (1f - progress)),
+        )
+        val radius = (sqrt(
+            size.height * size.height + size.width * size.width
+        ) * .5f) * progress
+
+        return Outline.Generic(Path().apply {
+            addOval(
+                Rect(
+                    center = center,
+                    radius = radius,
+                )
+            )
+        })
     }
 }
 
-fun getCommonPermissionList(): Array<String> {
-    val permissionList: MutableList<String> = mutableListOf()
-
-    permissionList.addAll(callPermissionArray29)
-    permissionList.addAll(callPermissionArray33)
-
-    return permissionList.toTypedArray()
-}
-
-@RequiresApi(Build.VERSION_CODES.R)
-private val callPermissionArray29 = arrayOf(
-    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-)
 
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private val callPermissionArray33 = arrayOf(
-    Manifest.permission.NEARBY_WIFI_DEVICES,
-    Manifest.permission.ACCESS_FINE_LOCATION,
-    Manifest.permission.ACCESS_COARSE_LOCATION
-)
-
-
-fun findApkFile(context: Context, fileName: String): Uri? {
-    val projection = arrayOf(
-        MediaStore.Downloads._ID,
-        MediaStore.Downloads.DISPLAY_NAME
-    )
-
-    val selection = "${MediaStore.Downloads.DISPLAY_NAME} LIKE ?"
-    val selectionArgs = arrayOf(fileName)
-
-    val uri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
-
-    context.contentResolver.query(
-        uri,
-        projection,
-        selection,
-        selectionArgs,
-        null
-    )?.use { cursor ->
-        if (cursor.moveToFirst()) {
-            val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID))
-            return ContentUris.withAppendedId(uri, id)
-        }
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MainScreen() {
+    val images = remember {
+        mutableStateListOf(
+            "https://images.unsplash.com/photo-1694481348806-0b6de4934812?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80",
+            "https://images.unsplash.com/photo-1694057442309-bfe467bff9a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80",
+            "https://images.unsplash.com/photo-1559803509-40f78353d413?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2564&q=80",
+            "https://plus.unsplash.com/premium_photo-1668633086435-a16be494a922?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80"
+        )
     }
 
-    return null // 파일을 찾지 못한 경우
-}
+    val pagerState = rememberPagerState(pageCount = {images.size})
+    val coroutineScope = rememberCoroutineScope()
 
-
-fun getPackageNameFromApk(context: Context, uri: Uri): String? {
-    var data: String = ""
-
-    val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
-
-    val cursor = context.contentResolver.query(
-        uri,
-        projection,
-        null,
-        null,
-        null
-    )
-
-    if(cursor != null && cursor.moveToFirst()) {
-
-        do {
-            data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
-        } while(cursor.moveToNext())
-
-        cursor.close()
+    HorizontalPager(state = pagerState) { idx ->
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .focusable()
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused) {
+                        // 포커스가 이동하면 해당 페이지로 스크롤
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(idx)
+                        }
+                    }
+                }
+            ,
+            model = ImageRequest.Builder(LocalContext.current).data(images[idx])
+                .build(),
+            contentDescription = "imagePager",
+            contentScale = ContentScale.Crop
+        )
     }
-
-
-    val pm = context.packageManager
-    val packageInfo = pm.getPackageArchiveInfo(data,0)
-
-
-    return packageInfo?.packageName
-}
-
-
-fun getHashFromPackageName(context: Context, packageName: String) {
-    Log.e("TAG", "getHashFromPackageName: ")
-    try {
-        val packageManager = context.packageManager
-        val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-
-        for (signature in info.signingInfo.apkContentsSigners) {
-            val md = MessageDigest.getInstance("SHA-256")
-            md.update(signature.toByteArray())
-            Log.e("MY KEY HASH:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
-        }
-    } catch (e: NameNotFoundException) {
-        e.stackTraceToString()
-    }
-}
-
-fun getFilePath(context: Context, uri: Uri): String {
-    var filePath: String = ""
-
-    val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
-
-    val cursor = context.contentResolver.query(
-        uri,
-        projection,
-        null,
-        null,
-        null
-    )
-
-    if(cursor != null && cursor.moveToFirst()) {
-        filePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
-        cursor.close()
-    }
-
-    return filePath
-}
-
-fun getHashFromPath(apkPath: String) {
-    Log.e("TAG", "getHashFromPath: ")
-    try {
-        val file: File = File(apkPath)
-        val fis = FileInputStream(file)
-        val digest = MessageDigest.getInstance("SHA-256") // SHA-1 또는 MD5도 가능
-        val buffer = ByteArray(1024)
-        var bytesRead: Int
-        while (fis.read(buffer).also { bytesRead = it } != -1) {
-            digest.update(buffer, 0, bytesRead)
-        }
-        fis.close()
-        val hashBytes = digest.digest()
-        val hashString = StringBuilder()
-        for (b in hashBytes) {
-            hashString.append(String.format("%02x", b))
-        }
-
-        Log.e("MY KEY HASH:", hashString.toString())
-
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-
-}
-
-
+} // End of MainScreen()

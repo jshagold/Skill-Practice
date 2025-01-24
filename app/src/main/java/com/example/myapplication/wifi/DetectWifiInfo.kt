@@ -10,6 +10,7 @@ import android.net.NetworkRequest
 import android.net.wifi.SupplicantState
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
+import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.background
@@ -79,17 +80,12 @@ suspend fun currentConnectedWifiName(context: Context) : String? {
     }
 
 
-    val wifiManager: WifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        // todo NEARBY_WIFI_DEVICES 런타임 권한을 받아야함
         var wifiInfo: WifiInfo? = null
 
-        val request = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .build()
-        val networkCallback = object : ConnectivityManager.NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
 
+        val networkCallback = object : ConnectivityManager.NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
             override fun onCapabilitiesChanged(
                 network: Network,
                 networkCapabilities: NetworkCapabilities
@@ -97,10 +93,12 @@ suspend fun currentConnectedWifiName(context: Context) : String? {
                 super.onCapabilitiesChanged(network, networkCapabilities)
 
                 wifiInfo = networkCapabilities.transportInfo as WifiInfo?
-                Log.e("TAG", "onCapabilitiesChanged: ssid=${wifiInfo?.ssid}", )
             }
         }
 
+        val request = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
 
         val connectivityManager: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.requestNetwork(request, networkCallback)
@@ -109,14 +107,20 @@ suspend fun currentConnectedWifiName(context: Context) : String? {
         }
         connectivityManager.registerNetworkCallback(request, networkCallback)
 
-        return wifiInfo?.ssid
+
+
+
+
+        return wifiInfo?.ssid + "\n macAddress: ${wifiInfo?.bssid}"
 
     } else {
+        val wifiManager: WifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
         val wifiInfo = wifiManager.connectionInfo
         if(wifiInfo.supplicantState == SupplicantState.COMPLETED) {
-            return wifiInfo.ssid
+            return wifiInfo.ssid + "\n macAddress: ${wifiInfo?.bssid}"
         }
-        return wifiInfo.ssid
+        return wifiInfo.ssid + "\n macAddress: ${wifiInfo?.bssid}"
     }
 }
 
@@ -124,22 +128,20 @@ suspend fun currentConnectedWifiName(context: Context) : String? {
 fun getPrivateDNSStatus(context: Context): String {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    if (connectivityManager != null) {
-        val activeNetwork = connectivityManager.activeNetwork
-        if (activeNetwork != null) {
-            val linkProperties = connectivityManager.getLinkProperties(activeNetwork)
-            if (linkProperties != null) {
-                // DNS 서버 확인
-                val dnsServers = linkProperties.dnsServers
-                return if (dnsServers.isNotEmpty()) {
-                    val dnsInfo = StringBuilder("DNS Servers:\n")
-                    for (dns in dnsServers) {
-                        dnsInfo.append(dns.hostAddress).append("\n")
-                    }
-                    dnsInfo.toString()
-                } else {
-                    "DNS 서버 정보를 가져올 수 없습니다."
+    val activeNetwork = connectivityManager.activeNetwork
+    if (activeNetwork != null) {
+        val linkProperties = connectivityManager.getLinkProperties(activeNetwork)
+        if (linkProperties != null) {
+            // DNS 서버 확인
+            val dnsServers = linkProperties.dnsServers
+            return if (dnsServers.isNotEmpty()) {
+                val dnsInfo = StringBuilder("DNS Servers:\n")
+                for (dns in dnsServers) {
+                    dnsInfo.append(dns.hostAddress).append("\n")
                 }
+                dnsInfo.toString()
+            } else {
+                "DNS 서버 정보를 가져올 수 없습니다."
             }
         }
     }

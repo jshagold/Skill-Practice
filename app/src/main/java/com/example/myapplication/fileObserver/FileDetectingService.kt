@@ -1,6 +1,5 @@
 package com.example.myapplication.fileObserver
 
-import android.app.DownloadManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,23 +8,17 @@ import android.app.Service
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.database.getStringOrNull
-import androidx.core.net.toUri
 import com.example.myapplication.MainActivity
-import com.example.myapplication.findApkFile
 
 class FileDetectingService : Service() {
 
