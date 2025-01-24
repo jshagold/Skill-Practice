@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.market.data.db.model.PostedProductEntity
+import com.example.market.data.db.entity.PostedProductEntity
 
 @Dao
 interface PostedDao {

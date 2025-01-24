@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.market.data.db.model.LikeProductEntity
+import com.example.market.data.db.entity.LikeProductEntity
 import kotlinx.coroutines.flow.Flow
 
 

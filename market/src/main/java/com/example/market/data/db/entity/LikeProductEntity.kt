@@ -1,4 +1,4 @@
-package com.example.market.data.db.model
+package com.example.market.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,9 +7,8 @@ import com.example.market.domain.model.SalesStatus
 import com.example.market.domain.model.Shipping
 import com.example.market.domain.model.Shop
 
-
-@Entity(tableName = "posted_product")
-data class PostedProductEntity (
+@Entity(tableName = "like_product")
+data class LikeProductEntity (
     @PrimaryKey
     val productId: String,
     val productName: String,

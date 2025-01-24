@@ -9,14 +9,14 @@ junit5Jupiter = "5.9.2"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2024.08.00"
+composeBom = "2024.12.01"
 appcompat = "1.7.0"
 material = "1.12.0"
 androidxDataStore = "1.1.1"
 jetbrainsKotlinJvm = "1.9.0"
 okHttp = "4.12.0"
 hilt = "2.51.1"
-coroutine = "1.6.0"
+coroutine = "1.7.3"
 junit5Plugin = "1.9.3.0"
 truth = "1.4.4"
 mockitoVersion = "5.14.2"
@@ -26,6 +26,9 @@ nav_Version = "2.8.5"
 room_version = "2.6.1"
 ksp_version = "1.9.0-1.0.13"
 gson_version = "2.11.0"
+coil_version = "2.6.0"
+constraintLayout_version = "1.1.0"
+composePagecurl_version = "1.5.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,6 +62,9 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 androidx-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Coroutine
+coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine" }
 kotlinx-coroutines-test = { group="org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref="coroutine" }
 
 # OkHttp
@@ -79,6 +85,15 @@ room-paging = { group = "androidx.room", name = "room-paging", version.ref = "ro
 
 # Gson
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson_version" }
+
+# ConstraintLayout
+androidx-constraintlayout = { group = "androidx.constraintlayout", name="constraintlayout-compose", version.ref="constraintLayout_version" }
+
+# Coil
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil_version" }
+
+# compose-pagecurl
+compose-pagecurl = { group = "io.github.oleksandrbalan", name = "pagecurl", version.ref = "composePagecurl_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

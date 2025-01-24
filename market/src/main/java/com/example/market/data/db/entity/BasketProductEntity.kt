@@ -1,14 +1,13 @@
-package com.example.market.data.db.model
+package com.example.market.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.market.domain.model.ProductCategory
 import com.example.market.domain.model.SalesStatus
 import com.example.market.domain.model.Shipping
-import com.example.market.domain.model.Shop
 
-@Entity(tableName = "like_product")
-data class LikeProductEntity (
+@Entity(tableName = "basket_product")
+data class BasketProductEntity (
     @PrimaryKey
     val productId: String,
     val productName: String,
@@ -16,7 +15,7 @@ data class LikeProductEntity (
     val price: String,
     val category: ProductCategory,
     val salesStatus: SalesStatus,
-    val shop: Shop,
+    val shopId: String,
     val isNew: Boolean,
     val shipping: Shipping
 )

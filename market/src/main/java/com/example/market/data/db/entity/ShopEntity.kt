@@ -1,4 +1,4 @@
-package com.example.market.data.db.model
+package com.example.market.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

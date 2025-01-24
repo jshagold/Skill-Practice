@@ -2,7 +2,7 @@ package com.example.market.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.example.market.data.db.model.ShopWithPostedProduct
+import com.example.market.data.db.entity.ShopWithPostedProduct
 
 @Dao
 interface ShopDao {
