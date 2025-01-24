@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.market.data.db.entity.BudgetCategoryEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BudgetCategoryDao {
@@ -14,7 +15,7 @@ interface BudgetCategoryDao {
     fun insertCategory(category: BudgetCategoryEntity)
 
     @Query("SELECT * FROM budget_category")
-    fun getAllCategory(): List<BudgetCategoryEntity>
+    fun getAllCategory(): Flow<List<BudgetCategoryEntity>>
 
     @Query("SELECT categoryId FROM budget_category WHERE categoryName = :categoryName")
     fun getCategoryIdByName(categoryName: String): Int
