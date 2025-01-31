@@ -5,8 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface BudgetCategoryRepository {
 
-    fun createCategory(category: BudgetCategory)
+    fun createCategory(categoryName: String)
 
     fun getAllCategory(): Flow<List<BudgetCategory>>
+
+    fun deleteCategory(categoryId: Int)
 
 }

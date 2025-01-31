@@ -17,38 +17,51 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.market.present.navigation.BottomNavItem
-import com.example.market.present.navigation.MainNavHost
+import com.example.market.present.navigation.BottomNavHost
 import com.example.market.present.navigation.navigateToBasket
 import com.example.market.present.navigation.navigateToHome
-import com.example.market.present.navigation.navigateToInterest
+import com.example.market.present.navigation.navigateToCategory
 import com.example.market.present.navigation.navigateToProfile
 
 @Preview
 @Composable
 fun PreviewMainScreen() {
-    MainScreen()
+    MainScreen(
+        mainNavController = rememberNavController()
+    )
 }
 
 @Composable
-fun MainRoute() {
-    MainScreen()
+fun MainRoute(
+    modifier: Modifier = Modifier,
+    mainNavController: NavHostController
+) {
+    MainScreen(
+        modifier = modifier,
+        mainNavController = mainNavController
+    )
 }
 
 @Composable
-fun MainScreen() {
-
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    mainNavController: NavHostController
+) {
     val navController: NavHostController = rememberNavController()
     val currentBackStackEntryState: State<NavBackStackEntry?> = navController.currentBackStackEntryAsState()
     val currentRoute: String? = currentBackStackEntryState.value?.destination?.route
 
     Scaffold(
+        modifier = modifier,
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {
         Box(
             modifier = Modifier
                 .padding(it)
         )   {
-            MainNavHost(
+            BottomNavHost(
+                modifier = Modifier,
+                mainNavController = mainNavController,
                 navController = navController
             )
         }
@@ -73,7 +86,7 @@ fun BottomNavigationBar(
                     when(it) {
                         BottomNavItem.Basket -> navController.navigateToBasket()
                         BottomNavItem.Home -> navController.navigateToHome()
-                        BottomNavItem.Interest -> navController.navigateToInterest()
+                        BottomNavItem.Interest -> navController.navigateToCategory()
                         BottomNavItem.Profile -> navController.navigateToProfile()
                     }
                 },

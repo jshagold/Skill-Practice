@@ -1,4 +1,4 @@
-package com.example.market.present.ui.category
+package com.example.market.present.ui.category.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(
-    private val application: Application,
+class CreateCategoryViewModel @Inject constructor(
+    application: Application,
     private val budgetCategoryUseCase: BudgetCategoryUseCase
 ) : AndroidViewModel(application) {
 
@@ -20,4 +20,5 @@ class CategoryViewModel @Inject constructor(
             budgetCategoryUseCase.createCategory(categoryName)
         }
     }
+
 }

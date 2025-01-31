@@ -27,7 +27,7 @@ interface BudgetCategoryDao {
     fun deleteCategory(category: BudgetCategoryEntity)
 
     @Query("DELETE FROM budget_category WHERE categoryId = :categoryId")
-    fun deleteCategoryById(categoryId: Long)
+    fun deleteCategoryById(categoryId: Int)
 
     // todo categoryName을 enum으로 converter 사용
     @Query("DELETE FROM budget_category WHERE categoryName = :categoryName")

@@ -10,10 +10,14 @@ class BudgetCategoryUseCase @Inject constructor(
 ) {
 
     fun createCategory(categoryName: String) {
-        budgetCategoryRepository.createCategory(BudgetCategory(categoryName))
+        budgetCategoryRepository.createCategory(categoryName)
     }
 
     fun getAllCategory(): Flow<List<BudgetCategory>> {
         return budgetCategoryRepository.getAllCategory()
+    }
+
+    fun deleteCategory(categoryId: Int) {
+        budgetCategoryRepository.deleteCategory(categoryId = categoryId)
     }
 }

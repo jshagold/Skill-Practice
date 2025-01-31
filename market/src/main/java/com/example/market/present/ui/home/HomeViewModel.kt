@@ -21,30 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val application: Application,
-    private val budgetCategoryUseCase: BudgetCategoryUseCase
+    application: Application,
 ) : AndroidViewModel(application) {
-
-    private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            budgetCategoryUseCase.getAllCategory()
-                .onStart {  }
-                .onEach { categoryList ->
-                    _uiState.update {
-                        it.copy(
-                            categoryList = categoryList
-                        )
-                    }
-                }
-                .onCompletion {
-                    Log.e("TAG", "list: ${uiState.value.categoryList}", )
-                }
-                .catch {  }
-                .launchIn(viewModelScope)
-        }
-    }
 
 }
