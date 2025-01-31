@@ -97,4 +97,16 @@ dependencies {
     implementation(project(":Domain"))
 
     implementation(libs.kotlinx.coroutines.test)
+
+    // Coil
+    implementation(libs.coil)                   // coil
+
+    // Coroutine
+    implementation(libs.coroutines)
+
+    // ConstraintLayout
+    implementation(libs.androidx.constraintlayout)
+
+    // compose pagecurl
+    implementation(libs.compose.pagecurl)
 }

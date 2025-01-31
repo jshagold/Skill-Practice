@@ -22,15 +22,23 @@ fun NavController.navigateToHome() {
 }
 
 /**
- * Interest 화면으로 이동
+ * Category 화면으로 이동
  */
-fun NavController.navigateToInterest() {
+fun NavController.navigateToCategory() {
     val navController = this
-    this.navigate(Route.INTEREST) {
+    this.navigate(Route.CATEGORY) {
         popUpTo(navController.graph.id) {
             inclusive = false
         }
     }
+}
+
+/**
+ * 카테고리 생성 화면으로 이동
+ */
+fun NavController.navigateToCreateCategory() {
+    val navController = this
+    navController.navigate(Route.CREATE_CATEGORY)
 }
 
 /**
@@ -56,3 +64,4 @@ fun NavController.navigateToProfile() {
         }
     }
 }
+

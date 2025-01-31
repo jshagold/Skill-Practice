@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinKapt)
     alias(libs.plugins.googleDaggerHiltAndroid)
     alias(libs.plugins.junit5)
+
+    // ksp
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -88,13 +91,25 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockk)
 
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.room.paging)
+
+    // Gson
+    implementation(libs.gson)
 
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Navigation-Compose
     implementation(libs.navigation.compose)
+
+    // ConstraintLayout
+    implementation(libs.androidx.constraintlayout)
 
 
 }
