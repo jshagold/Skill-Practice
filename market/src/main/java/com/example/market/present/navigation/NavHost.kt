@@ -33,16 +33,20 @@ fun MainNavHost(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
+
         composable(route = Route.MAIN) {
             MainRoute(
                 mainNavController = navController
             )
         }
 
-
         composable(route = Route.CREATE_CATEGORY) {
-            CreateCategoryRoute()
+            CreateCategoryRoute(
+                modifier = modifier,
+                navController = navController
+            )
         }
+        
     }
 }
 
