@@ -104,6 +104,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
+    testImplementation(libs.hilt.android.test)
+    androidTestImplementation(libs.hilt.android.test)
 
     // Navigation-Compose
     implementation(libs.navigation.compose)

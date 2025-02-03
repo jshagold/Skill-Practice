@@ -7,24 +7,26 @@ import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 
 
-fun BudgetEntity.toDomainModel(categoryName: String) : Budget {
+fun BudgetEntity.toDomainModel(category: BudgetCategoryEntity) : Budget {
     return Budget(
         budgetId = budgetId,
-        category = categoryName,
+        categoryId = category.categoryId,
+        categoryName = category.categoryName,
         budget = budget,
+        memo = memo,
         dateTime = dateTime,
         inputDateTime = inputDateTime,
     )
 }
 
 fun BudgetWithCategoryEntity.toBudgetList() : List<Budget> {
-    val categoryName = this.category.categoryName
-
     return this.budgets.map {
         Budget(
             budgetId = it.budgetId,
-            category = categoryName,
+            categoryId = this.category.categoryId,
+            categoryName = this.category.categoryName,
             budget = it.budget,
+            memo = it.memo,
             dateTime = it.dateTime,
             inputDateTime = it.inputDateTime,
         )

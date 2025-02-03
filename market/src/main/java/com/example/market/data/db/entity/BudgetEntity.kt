@@ -18,6 +18,7 @@ import androidx.room.PrimaryKey
 data class BudgetEntity(
     val categoryId: Int,
     val budget: Float,
+    val memo: String,
     val dateTime: String,
     val inputDateTime: String,
 ) {

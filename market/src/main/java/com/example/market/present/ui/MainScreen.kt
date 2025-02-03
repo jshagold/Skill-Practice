@@ -18,7 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.market.present.navigation.BottomNavItem
 import com.example.market.present.navigation.BottomNavHost
-import com.example.market.present.navigation.navigateToBasket
+import com.example.market.present.navigation.navigateToBudget
 import com.example.market.present.navigation.navigateToHome
 import com.example.market.present.navigation.navigateToCategory
 import com.example.market.present.navigation.navigateToProfile
@@ -84,7 +84,7 @@ fun BottomNavigationBar(
                 selected = currentDestination == it.route,
                 onClick = {
                     when(it) {
-                        BottomNavItem.Basket -> navController.navigateToBasket()
+                        BottomNavItem.Budget -> navController.navigateToBudget()
                         BottomNavItem.Home -> navController.navigateToHome()
                         BottomNavItem.Interest -> navController.navigateToCategory()
                         BottomNavItem.Profile -> navController.navigateToProfile()

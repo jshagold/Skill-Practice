@@ -35,11 +35,12 @@ class BudgetRepositoryImpl @Inject constructor(
 
     override fun inputBudget(budget: Budget) {
 
-        val categoryId = budgetCategoryDao.getCategoryIdByName(budget.category)
+        val categoryId = budgetCategoryDao.getCategoryIdByName(budget.categoryName)
 
         budgetDao.insertBudget(budget = BudgetEntity(
             categoryId = categoryId,
             budget = budget.budget,
+            memo = budget.memo,
             dateTime = budget.dateTime,
             inputDateTime = budget.inputDateTime
         ))

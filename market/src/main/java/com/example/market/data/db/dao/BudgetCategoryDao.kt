@@ -17,6 +17,9 @@ interface BudgetCategoryDao {
     @Query("SELECT * FROM budget_category")
     fun getAllCategory(): Flow<List<BudgetCategoryEntity>>
 
+    @Query("SELECT * FROM budget_category WHERE categoryName = :categoryName")
+    fun getCategoryByName(categoryName: String): Flow<BudgetCategoryEntity>
+
     @Query("SELECT categoryId FROM budget_category WHERE categoryName = :categoryName")
     fun getCategoryIdByName(categoryName: String): Int
 

@@ -42,11 +42,11 @@ fun NavController.navigateToCreateCategory() {
 }
 
 /**
- * Basket 화면으로 이동
+ * Budget 화면으로 이동
  */
-fun NavController.navigateToBasket() {
+fun NavController.navigateToBudget() {
     val navController = this
-    this.navigate(Route.BASKET) {
+    this.navigate(Route.BUDGET) {
         popUpTo(navController.graph.id) {
             inclusive = false
         }

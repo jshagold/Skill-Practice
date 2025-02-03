@@ -4,7 +4,7 @@ object Route {
     const val MAIN = "Main"
     const val HOME = "Home"
     const val SEARCH = "Search"
-    const val BASKET = "Basket"
+    const val BUDGET = "Basket"
     const val PROFILE = "Profile"
     const val CATEGORY = "Category"
     const val CREATE_CATEGORY = "CreateCategory"

@@ -4,13 +4,12 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.market.present.ui.MainRoute
-import com.example.market.present.ui.basket.BasketRoute
+import com.example.market.present.ui.budget.BudgetRoute
 import com.example.market.present.ui.home.HomeRoute
 import com.example.market.present.ui.category.CategoryRoute
 import com.example.market.present.ui.category.CreateCategoryRoute
@@ -76,8 +75,8 @@ fun BottomNavHost(
             )
         }
 
-        composable(route = Route.BASKET) {
-            BasketRoute()
+        composable(route = Route.BUDGET) {
+            BudgetRoute()
         }
 
         composable(route = Route.CATEGORY) {

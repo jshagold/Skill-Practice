@@ -9,7 +9,7 @@ sealed class BottomNavItem(val route: String, val text: Int) {
 
     data object Profile : BottomNavItem(route = Route.PROFILE, text = R.string.bottom_nav_profile)
 
-    data object Basket : BottomNavItem(route = Route.BASKET, text = R.string.bottom_nav_basket)
+    data object Budget : BottomNavItem(route = Route.BUDGET, text = R.string.bottom_nav_budget)
 
 
 
@@ -18,8 +18,8 @@ sealed class BottomNavItem(val route: String, val text: Int) {
             return listOf(
                 Home,
                 Interest,
-                Profile,
-                Basket
+                Budget,
+                Profile
             )
         }
     }
