@@ -2,6 +2,7 @@ package com.example.market.data.db.repository
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.filters.MediumTest
 import androidx.test.filters.SmallTest
 import com.example.market.data.db.ApplicationDatabase
 import com.example.market.data.db.dao.BudgetCategoryDao
@@ -11,19 +12,33 @@ import com.example.market.data.db.entity.BudgetCategoryEntity
 import com.example.market.data.db.entity.BudgetEntity
 import com.example.market.domain.model.Budget
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@SmallTest
 class BudgetRepositoryImplTest {
 
+
+//    val budgetRepository: BudgetRepositoryImpl = mock()
+    
+
     lateinit var database: ApplicationDatabase
+
+
+
+
 
     lateinit var budgetDao: BudgetDao
     lateinit var budgetCategoryDao: BudgetCategoryDao
@@ -70,35 +85,27 @@ class BudgetRepositoryImplTest {
         // Then
         assertThat(allList.size).isEqualTo(1)
 
+
+
     }
 
     @Test
-    fun inputBudget() = runBlocking {
+    fun inputBudget() = runTest {
         // Given
-        var category: BudgetCategoryEntity? = null
-        var insert: BudgetEntity? = null
-
-        budgetCategoryDao.getCategoryByName(categoryName1).collectLatest {
-            category = it
-        }
-
-        category.let {
-            insert = BudgetEntity(
-                categoryId = category!!.categoryId,
-                budget = 100f,
-                memo = "test budget 1",
-                dateTime = "20250203000000",
-                inputDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")),
-            )
-        }
+        val category: BudgetCategoryEntity = budgetCategoryDao.getCategoryByName(categoryName1).take(1).toList()[0]
+        val insert = BudgetEntity(
+            categoryId = category.categoryId,
+            budget = 100f,
+            memo = "test budget 1",
+            dateTime = "20250203000000",
+            inputDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")),
+        )
 
         // When
-        budgetDao.insertBudget(insert!!)
+        budgetDao.insertBudget(insert)
 
         // Then
-        budgetDao.getAllBudget()
-//        budgetDao.insertBudget()
-
+        assertThat(insert).isEqualTo(budgetDao.getAllBudget()[0])
     }
 
     @Test
