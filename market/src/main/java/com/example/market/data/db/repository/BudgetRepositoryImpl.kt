@@ -47,6 +47,6 @@ class BudgetRepositoryImpl @Inject constructor(
     }
 
     override fun deleteBudget(budget: Budget) {
-        TODO("Not yet implemented")
+        budgetDao.deleteBudgetByBudgetId(budgetId = budget.budgetId)
     }
 }

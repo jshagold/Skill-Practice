@@ -76,6 +76,7 @@ dependencies {
     // Test
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // JUnit5
     testImplementation(libs.junit.jupiter.api)
@@ -92,6 +93,7 @@ dependencies {
     testImplementation(libs.mockk)
     androidTestImplementation(libs.mockito.core)
     androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.android)
     androidTestImplementation(libs.mockk)
 
     // Room

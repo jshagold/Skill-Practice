@@ -2,52 +2,30 @@ package com.example.market.data.db.repository
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.filters.MediumTest
-import androidx.test.filters.SmallTest
 import com.example.market.data.db.ApplicationDatabase
 import com.example.market.data.db.dao.BudgetCategoryDao
 import com.example.market.data.db.dao.BudgetDao
 import com.example.market.data.db.dao.BudgetWithCategoryDao
 import com.example.market.data.db.entity.BudgetCategoryEntity
-import com.example.market.data.db.entity.BudgetEntity
 import com.example.market.domain.model.Budget
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+
 
 class BudgetRepositoryImplTest {
 
-
-//    val budgetRepository: BudgetRepositoryImpl = mock()
-    
-
     lateinit var database: ApplicationDatabase
-
-
-
-
-
     lateinit var budgetDao: BudgetDao
     lateinit var budgetCategoryDao: BudgetCategoryDao
     lateinit var budgetWithCategoryDao: BudgetWithCategoryDao
 
-    // Given
+    lateinit var budgetRepositoryImpl: BudgetRepositoryImpl
+
     private val categoryName1 = "Test_Category"
-
-
 
     @Before
     fun setUp() {
@@ -61,6 +39,8 @@ class BudgetRepositoryImplTest {
         budgetWithCategoryDao = database.budgetWithCategoryDao()
 
         setGivenCategoryData(budgetCategoryDao)
+
+        budgetRepositoryImpl = BudgetRepositoryImpl(budgetDao,budgetCategoryDao,budgetWithCategoryDao)
     }
 
     @After
@@ -69,46 +49,67 @@ class BudgetRepositoryImplTest {
     }
 
     private fun setGivenCategoryData(budgetCategoryDao: BudgetCategoryDao) {
-        budgetCategoryDao.insertCategory(BudgetCategoryEntity(
-            categoryName1
-        ))
+        budgetCategoryDao.insertCategory(
+            BudgetCategoryEntity(
+                categoryName1
+            )
+        )
     }
 
 
     @Test
-    fun getAllBudget() {
+    fun getAllBudget() = runTest {
         // Given
 
         // When
-        val allList = budgetWithCategoryDao.getAllBudgetWithCategory()
+        val budgetList = budgetRepositoryImpl.getAllBudget().first()
 
         // Then
-        assertThat(allList.size).isEqualTo(1)
-
-
-
+        assertThat(budgetList.size).isEqualTo(0)
     }
 
     @Test
     fun inputBudget() = runTest {
         // Given
-        val category: BudgetCategoryEntity = budgetCategoryDao.getCategoryByName(categoryName1).take(1).toList()[0]
-        val insert = BudgetEntity(
-            categoryId = category.categoryId,
+        val budget = Budget(
+            budgetId = 0,
+            categoryId = 0,
+            categoryName = categoryName1,
             budget = 100f,
-            memo = "test budget 1",
-            dateTime = "20250203000000",
-            inputDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")),
+            memo = "memo",
+            dateTime = "20250204",
+            inputDateTime = "20250204",
         )
 
         // When
-        budgetDao.insertBudget(insert)
+        budgetRepositoryImpl.inputBudget(budget)
 
         // Then
-        assertThat(insert).isEqualTo(budgetDao.getAllBudget()[0])
+        val budgetList = budgetRepositoryImpl.getAllBudget().first()
+        assertThat(budget.categoryName).isEqualTo(budgetList[0].categoryName)
+
     }
 
     @Test
-    fun deleteBudget() {
+    fun deleteBudget() = runTest {
+        // Given
+        val budget = Budget(
+            budgetId = 1,
+            categoryId = 0,
+            categoryName = categoryName1,
+            budget = 100f,
+            memo = "memo",
+            dateTime = "20250204",
+            inputDateTime = "20250204",
+        )
+        budgetRepositoryImpl.inputBudget(budget)
+
+        // When
+        budgetRepositoryImpl.deleteBudget(budget)
+
+        // Then
+        val budgetList = budgetRepositoryImpl.getAllBudget().first()
+        assertThat(budgetList.size).isEqualTo(0)
+
     }
 }
