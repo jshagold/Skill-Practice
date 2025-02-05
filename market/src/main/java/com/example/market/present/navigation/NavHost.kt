@@ -9,7 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.market.present.ui.MainRoute
-import com.example.market.present.ui.budget.BudgetRoute
+import com.example.market.present.ui.budget.screen.BudgetRoute
+import com.example.market.present.ui.budget.screen.ManageBudgetRoute
 import com.example.market.present.ui.home.HomeRoute
 import com.example.market.present.ui.category.CategoryRoute
 import com.example.market.present.ui.category.CreateCategoryRoute
@@ -45,6 +46,12 @@ fun MainNavHost(
                 navController = navController
             )
         }
+
+        composable(route = Route.MANAGE_BUDGET) {
+            ManageBudgetRoute(
+                navController = navController
+            )
+        }
         
     }
 }
@@ -76,7 +83,11 @@ fun BottomNavHost(
         }
 
         composable(route = Route.BUDGET) {
-            BudgetRoute()
+            BudgetRoute(
+                navigateToManageBudget = {
+                    mainNavController.navigateToManageBudget()
+                }
+            )
         }
 
         composable(route = Route.CATEGORY) {

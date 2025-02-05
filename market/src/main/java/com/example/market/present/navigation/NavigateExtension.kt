@@ -54,6 +54,13 @@ fun NavController.navigateToBudget() {
 }
 
 /**
+ * Budget 관리 화면으로 이동
+ */
+fun NavController.navigateToManageBudget() {
+    this.navigate(Route.MANAGE_BUDGET)
+}
+
+/**
  * Profile 화면으로 이동
  */
 fun NavController.navigateToProfile() {

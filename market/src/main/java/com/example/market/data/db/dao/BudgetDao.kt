@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.market.data.db.entity.BudgetEntity
+import com.example.market.domain.model.Budget
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BudgetDao {
@@ -15,6 +17,18 @@ interface BudgetDao {
 
     @Query("SELECT * FROM budget")
     fun getAllBudget(): List<BudgetEntity>
+
+    @Query("SELECT * FROM budget WHERE budget >= 0")
+    fun getPositiveBudget(): Flow<List<BudgetEntity>>
+
+    @Query("SELECT * FROM budget WHERE budget < 0")
+    fun getNegativeBudget(): Flow<List<BudgetEntity>>
+
+    @Query("SELECT SUM(budget) FROM budget WHERE budget >= 0")
+    fun getTotalIncome(): Flow<Float>
+
+    @Query("SELECT SUM(budget) FROM budget")
+    fun getRemainBalance(): Flow<Float>
 
     @Update
     fun updateBudget(budget: BudgetEntity)
