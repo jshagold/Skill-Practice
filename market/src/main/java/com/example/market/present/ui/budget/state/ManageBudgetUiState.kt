@@ -1,4 +1,9 @@
 package com.example.market.present.ui.budget.state
 
-class ManageBudgetUiState {
-}
+import com.example.market.domain.model.Budget
+import com.example.market.domain.model.BudgetCategory
+
+data class ManageBudgetUiState(
+    val categoryList: List<BudgetCategory> = listOf(),
+    val budgetList: List<Budget> = listOf()
+)

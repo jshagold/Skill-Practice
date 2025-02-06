@@ -59,6 +59,7 @@ fun BudgetScreen(
 ) {
     Box(
         modifier = modifier
+            .fillMaxSize()
     ) {
         Column {
             Text(

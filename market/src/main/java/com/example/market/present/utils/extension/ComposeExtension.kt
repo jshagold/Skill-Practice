@@ -1,4 +1,4 @@
-package com.example.market.present.extension
+package com.example.market.present.utils.extension
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

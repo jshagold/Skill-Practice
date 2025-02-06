@@ -13,7 +13,7 @@ interface BudgetWithCategoryDao {
 
     @Transaction
     @Query("SELECT * FROM budget_category")
-    fun getAllBudgetWithCategory() : List<BudgetWithCategoryEntity>
+    fun getAllBudgetWithCategory() : Flow<List<BudgetWithCategoryEntity>>
 
     @Query("SELECT * FROM budget_category WHERE categoryName = :categoryName")
     fun getAllBudgetWithCategoryByCategoryName(categoryName: String): List<BudgetWithCategoryEntity>

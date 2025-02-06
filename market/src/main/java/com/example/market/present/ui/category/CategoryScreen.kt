@@ -11,24 +11,19 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.market.present.extension.noRippleClickable
 import com.example.market.present.theme.PastelYellow
 import com.example.market.present.ui.category.component.CategoryTab
 import com.example.market.present.ui.category.component.CreateBtn
 import com.example.market.present.ui.category.viewmodel.CategoryViewModel
-import com.example.market.present.ui.component.EditText
 
 @Preview
 @Composable
