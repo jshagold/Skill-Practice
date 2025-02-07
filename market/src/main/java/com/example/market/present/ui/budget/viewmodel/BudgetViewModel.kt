@@ -42,10 +42,6 @@ class BudgetViewModel @Inject constructor(
 //        budgetUseCase.inputBudget()
     }
 
-    fun deleteBudget(budget: Budget) {
-        budgetUseCase.deleteBudget(budget)
-    }
-
     fun getAllBudget() {
         viewModelScope.launch(Dispatchers.IO) {
             budgetUseCase.getAllBudget()

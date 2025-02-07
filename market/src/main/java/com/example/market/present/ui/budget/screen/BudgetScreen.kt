@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -75,9 +76,13 @@ fun BudgetScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(
+                        horizontal = 10.dp
+                    )
             ) {
                 items(budgetList.size) { index ->
                     BudgetInfo(
+                        budgetId = budgetList[index].budgetId,
                         categoryName = budgetList[index].categoryName,
                         budget = budgetList[index].budget,
                         memo = budgetList[index].memo,

@@ -4,13 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -29,11 +30,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 import com.example.market.present.ui.budget.component.BudgetInfo
-import com.example.market.present.utils.extension.noRippleClickable
 import com.example.market.present.ui.budget.viewmodel.ManageBudgetViewModel
 import com.example.market.present.ui.component.EditText
 import com.example.market.present.utils.checkStringToFloat
-import com.example.market.present.utils.stringToFloat
+import com.example.market.present.utils.extension.noRippleClickable
 
 
 @Preview
@@ -56,7 +56,8 @@ fun ManageBudgetRoute(
     ManageBudgetScreen(
         categoryList = uiState.categoryList,
         budgetList = uiState.budgetList,
-        createBudget = viewModel::createBudget
+        createBudget = viewModel::createBudget,
+        deleteBudget = viewModel::deleteBudget
     )
 }
 
@@ -67,7 +68,7 @@ fun ManageBudgetScreen(
     categoryList: List<BudgetCategory> = listOf(),
     budgetList: List<Budget> = listOf(),
     createBudget: (categoryId: Int, budget: Float, memo: String, datetime: String) -> Unit,
-    deleteBudget: () -> Unit = {},
+    deleteBudget: (budgetId: Long) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
 
@@ -140,6 +141,10 @@ fun ManageBudgetScreen(
         LazyColumn(
             modifier = Modifier
                 .verticalScroll(scrollState)
+                .heightIn(max = budgetList.size.times(150.dp))
+                .padding(
+                    horizontal = 10.dp
+                )
         ) {
             item {
                 Text(
@@ -149,10 +154,13 @@ fun ManageBudgetScreen(
 
             items(budgetList.size) { index ->
                 BudgetInfo(
+                    budgetId = budgetList[index].budgetId,
                     categoryName = budgetList[index].categoryName,
                     budget = budgetList[index].budget,
                     memo = budgetList[index].memo,
                     datetime = budgetList[index].inputDateTime,
+                    deleteFlag = true,
+                    deleteBudget = deleteBudget,
                 )
             }
         }

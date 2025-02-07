@@ -76,7 +76,14 @@ class ManageBudgetViewModel @Inject constructor(
         }
     }
 
-    fun getAllBudget() {
+    fun deleteBudget(budgetId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            budgetUseCase.deleteBudget(budgetId)
+        }
+    }
+
+
+    private fun getAllBudget() {
         viewModelScope.launch(Dispatchers.IO) {
             budgetUseCase.getAllBudget()
                 .onStart {  }

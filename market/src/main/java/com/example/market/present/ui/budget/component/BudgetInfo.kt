@@ -2,18 +2,13 @@ package com.example.market.present.ui.budget.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,19 +25,20 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.Visibility
 import com.example.market.R
 import com.example.market.present.utils.extension.noRippleClickable
 
 @Composable
 fun BudgetInfo(
+    budgetId: Long,
     categoryName: String,
     budget: Float,
     memo: String,
     datetime: String,
+    deleteFlag: Boolean = false,
+    deleteBudget: (budgetId: Long) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -57,7 +53,9 @@ fun BudgetInfo(
 
         ConstraintLayout(
             modifier = modifier
-                .padding(5.dp)
+                .padding(
+                    vertical = 5.dp
+                )
                 .border(1.dp, Color.Gray)
                 .padding(5.dp)
                 .constrainAs(infoComponent) {
@@ -68,10 +66,12 @@ fun BudgetInfo(
                     width = Dimension.fillToConstraints
                 }
                 .noRippleClickable {
-                    visible = !visible
+                    if(deleteFlag) {
+                        visible = !visible
+                    }
                 }
         ) {
-            val (categoryComponent, budgetComponent, datetimeComponent) = createRefs()
+            val (categoryComponent, budgetComponent, memoComponent, datetimeComponent) = createRefs()
             Text(
                 text = "카테고리 : $categoryName",
                 modifier = Modifier
@@ -87,15 +87,24 @@ fun BudgetInfo(
                 modifier = Modifier
                     .constrainAs(budgetComponent) {
                         top.linkTo(categoryComponent.bottom)
-                        bottom.linkTo(datetimeComponent.top)
+                        bottom.linkTo(memoComponent.top)
                         start.linkTo(parent.start)
+                    }
+            )
+            Text(
+                text = "메모 : $memo",
+                modifier = Modifier
+                    .constrainAs(memoComponent) {
+                        top.linkTo(budgetComponent.bottom)
+                        bottom.linkTo(datetimeComponent.top)
+                        end.linkTo(parent.end)
                     }
             )
             Text(
                 text = "작성날짜 : $datetime",
                 modifier = Modifier
                     .constrainAs(datetimeComponent) {
-                        top.linkTo(budgetComponent.bottom)
+                        top.linkTo(memoComponent.bottom)
                         bottom.linkTo(parent.bottom)
                         end.linkTo(parent.end)
                     }
@@ -131,9 +140,10 @@ fun BudgetInfo(
                     contentDescription = "icon_close",
                     colorFilter = ColorFilter.tint(Color.Red),
                     modifier = Modifier
-                        .clickable {
-
+                        .noRippleClickable {
+                            deleteBudget(budgetId)
                         }
+                        .padding(15.dp)
 
                 )
             }

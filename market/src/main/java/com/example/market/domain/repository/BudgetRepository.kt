@@ -17,5 +17,5 @@ interface BudgetRepository {
 
     fun inputBudget(budget: Budget)
 
-    fun deleteBudget(budget: Budget)
+    fun deleteBudget(budgetId: Long)
 }
