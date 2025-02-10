@@ -26,14 +26,14 @@ fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
 /**
  *
  */
-fun Modifier.dragModifier(index: Int, dragAndDropListState: DragDropListState) = composed {
-    val isDragging = index == dragAndDropListState.currentIndexOfDraggedItem
-    val offsetOrNull = dragAndDropListState.ele
-
-    Modifier
-        .zIndex()
-        .graphicsLayer {
-
-        }
-}
+//fun Modifier.dragModifier(index: Int, dragAndDropListState: DragDropListState) = composed {
+//    val isDragging = index == dragAndDropListState.currentIndexOfDraggedItem
+//    val offsetOrNull = dragAndDropListState.ele
+//
+//    Modifier
+//        .zIndex()
+//        .graphicsLayer {
+//
+//        }
+//}
 
