@@ -89,7 +89,7 @@ class Permutation {
     }
 }
 
-fun main() {
+fun permTest() {
     val perm = Permutation()
     perm.permutation(2)
     println("permutation count: ${perm.permutationCount}")
