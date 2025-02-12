@@ -14,7 +14,15 @@ fun main(args: Array<String>) {
 
 
 //    BJ4673().main()
+//    BJ1065().main(br.readLine().toInt())
+//    BJ2231().main(br.readLine().toInt())
+//    val (x,y) = br.readLine().split(" ").map { it.toInt() }
+//    val inputList = mutableListOf<String>()
+//    repeat(x) {
+//        inputList.add(br.readLine())
+//    }
+//    BJ1018().main(inputList)
 
-
-    BJ1065().main(br.readLine().toInt())
+//    BJ1436().main(br.readLine().toInt())
+    BJ1436().improveMain(br.readLine().toInt())
 }
