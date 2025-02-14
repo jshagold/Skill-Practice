@@ -35,9 +35,22 @@ fun main(args: Array<String>) {
 //    }
 //    BJ7568().main(list)
 
-    val list = mutableListOf<Int>()
-    repeat(9) {
-        list.add(br.readLine().toInt())
-    }
-    BJ2309().main(list)
+//    val list = mutableListOf<Int>()
+//    repeat(9) {
+//        list.add(br.readLine().toInt())
+//    }
+//    BJ2309().main(list)
+
+    // todo 다시풀어
+//    BJ9663().main(br.readLine().toInt())
+
+//    val pairList = mutableListOf<Pair<Int, Int>>()
+//    repeat(br.readLine().toInt()) {
+//        val input = br.readLine().split(" ").map{ it.toInt() }
+//        pairList.add(Pair(input[0], input[1]))
+//    }
+//    BJ14501().main(pairList)
+
+    val(x,y) = br.readLine().split(" ").map { it.toInt() }
+    BJ2501().main(x, y)
 }
