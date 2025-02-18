@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 import com.example.market.present.ui.budget.component.BudgetInfo
+import com.example.market.present.ui.budget.component.dragdrop.DragDropList
 import com.example.market.present.ui.budget.viewmodel.ManageBudgetViewModel
 import com.example.market.present.ui.component.EditText
 import com.example.market.present.utils.checkStringToFloat
@@ -138,32 +139,51 @@ fun ManageBudgetScreen(
             color = Color.Black
         )
 
-        LazyColumn(
+        DragDropList(
             modifier = Modifier
-                .verticalScroll(scrollState)
-                .heightIn(max = budgetList.size.times(150.dp))
                 .padding(
                     horizontal = 10.dp
-                )
-        ) {
-            item {
-                Text(
-                    text = "Budget List size:${budgetList.size}"
-                )
-            }
-
-            items(budgetList.size) { index ->
-                BudgetInfo(
-                    budgetId = budgetList[index].budgetId,
-                    categoryName = budgetList[index].categoryName,
-                    budget = budgetList[index].budget,
-                    memo = budgetList[index].memo,
-                    datetime = budgetList[index].inputDateTime,
-                    deleteFlag = true,
-                    deleteBudget = deleteBudget,
-                )
-            }
+                ),
+            listSize = budgetList.size
+        ) { modifier, index ->
+            BudgetInfo(
+                modifier = modifier,
+                budgetId = budgetList[index].budgetId,
+                categoryName = budgetList[index].categoryName,
+                budget = budgetList[index].budget,
+                memo = budgetList[index].memo,
+                datetime = budgetList[index].inputDateTime,
+                deleteFlag = true,
+                deleteBudget = deleteBudget,
+            )
         }
+
+//        LazyColumn(
+//            modifier = Modifier
+//                .verticalScroll(scrollState)
+//                .heightIn(max = budgetList.size.times(150.dp))
+//                .padding(
+//                    horizontal = 10.dp
+//                )
+//        ) {
+//            item {
+//                Text(
+//                    text = "Budget List size:${budgetList.size}"
+//                )
+//            }
+//
+//            items(budgetList.size) { index ->
+//                BudgetInfo(
+//                    budgetId = budgetList[index].budgetId,
+//                    categoryName = budgetList[index].categoryName,
+//                    budget = budgetList[index].budget,
+//                    memo = budgetList[index].memo,
+//                    datetime = budgetList[index].inputDateTime,
+//                    deleteFlag = true,
+//                    deleteBudget = deleteBudget,
+//                )
+//            }
+//        }
     }
 
 }

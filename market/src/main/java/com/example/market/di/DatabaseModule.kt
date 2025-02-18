@@ -6,6 +6,7 @@ import com.example.market.data.db.ApplicationDatabase
 import com.example.market.data.db.dao.BudgetCategoryDao
 import com.example.market.data.db.dao.BudgetDao
 import com.example.market.data.db.dao.BudgetWithCategoryDao
+import com.example.market.data.db.migration_1_2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +28,9 @@ object DatabaseModule {
             context.applicationContext,
             ApplicationDatabase::class.java,
             ApplicationDatabase.ApplicationDatabaseName
-        ).build()
+        )
+            .addMigrations(migration_1_2)
+            .build()
     }
 
     @Provides

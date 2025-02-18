@@ -32,14 +32,14 @@ import com.example.market.present.utils.extension.noRippleClickable
 
 @Composable
 fun BudgetInfo(
+    modifier: Modifier = Modifier,
     budgetId: Long,
     categoryName: String,
     budget: Float,
     memo: String,
     datetime: String,
     deleteFlag: Boolean = false,
-    deleteBudget: (budgetId: Long) -> Unit = {},
-    modifier: Modifier = Modifier
+    deleteBudget: (budgetId: Long) -> Unit = {}
 ) {
     var visible by remember { mutableStateOf(false) }
 
@@ -52,7 +52,7 @@ fun BudgetInfo(
         val density = LocalDensity.current
 
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .padding(
                     vertical = 5.dp
                 )
