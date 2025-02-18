@@ -6,6 +6,16 @@ import java.io.InputStreamReader
 fun main(args: Array<String>) {
     val br = BufferedReader(InputStreamReader(System.`in`))
 
+    br.readLine()
+    val numList = br.readLine().split(" ").map { it.toInt() }
+    val signCount = br.readLine().split(" ").map { it.toInt() }
+    BJ14888().main(numList, signCount)
+}
+
+
+fun solve1() {
+//    val br = BufferedReader(InputStreamReader(System.`in`))
+
 //    val (x, target) = readln().split(" ").map { it.toInt() }
 //    val cardList = readln().split(" ").map { it.toInt() }
 //    println("${BJ2798(targetNum = target, cardList = cardList).main()}")
@@ -51,6 +61,6 @@ fun main(args: Array<String>) {
 //    }
 //    BJ14501().main(pairList)
 
-    val(x,y) = br.readLine().split(" ").map { it.toInt() }
-    BJ2501().main(x, y)
+//    val(x,y) = br.readLine().split(" ").map { it.toInt() }
+//    BJ2501().main(x, y)
 }
