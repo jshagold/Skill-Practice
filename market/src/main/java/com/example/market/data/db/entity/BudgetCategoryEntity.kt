@@ -16,5 +16,5 @@ data class BudgetCategoryEntity(
     var categoryId: Int = 0
 
     @ColumnInfo(name = "display_index")
-    var displayIndex: Int = categoryId
+    var displayIndex: Int = 0
 }

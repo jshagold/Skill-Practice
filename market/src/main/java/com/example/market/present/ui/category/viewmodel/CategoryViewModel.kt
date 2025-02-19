@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.market.domain.usecase.BudgetCategoryUseCase
 import com.example.market.present.ui.category.CategoryUiState
+import com.example.market.present.utils.extension.move
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ class CategoryViewModel @Inject constructor(
                 .onEach { categoryList ->
                     _uiState.update {
                         it.copy(
-                            categoryList = categoryList
+                            categoryList = categoryList.sortedBy { budgetCategory ->  budgetCategory.displayIndex }
                         )
                     }
                 }
@@ -51,6 +52,22 @@ class CategoryViewModel @Inject constructor(
     fun deleteCategory(categoryId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             budgetCategoryUseCase.deleteCategory(categoryId = categoryId)
+        }
+    }
+
+    fun moveListIndex(from: Int, to: Int) {
+        val list = uiState.value.categoryList.toMutableList()
+        list.move(from, to)
+        _uiState.update {
+            it.copy(
+                categoryList = list
+            )
+        }
+    }
+
+    fun saveListIndex() {
+        viewModelScope.launch(Dispatchers.IO) {
+
         }
     }
 }

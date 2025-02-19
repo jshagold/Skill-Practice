@@ -43,5 +43,6 @@ fun BudgetCategoryEntity.toDomainModel() : BudgetCategory {
     return BudgetCategory(
         categoryId = this.categoryId,
         categoryName = this.categoryName,
+        displayIndex = this.displayIndex,
     )
 }

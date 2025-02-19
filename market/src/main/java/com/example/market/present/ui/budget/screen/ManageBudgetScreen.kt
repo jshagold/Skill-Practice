@@ -144,7 +144,9 @@ fun ManageBudgetScreen(
                 .padding(
                     horizontal = 10.dp
                 ),
-            listSize = budgetList.size
+            listSize = budgetList.size,
+            //todo
+            changeListIndex = {_,_->}
         ) { modifier, index ->
             BudgetInfo(
                 modifier = modifier,

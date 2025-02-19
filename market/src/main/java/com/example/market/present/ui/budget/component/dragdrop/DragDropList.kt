@@ -1,5 +1,6 @@
 package com.example.market.present.ui.budget.component.dragdrop
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,14 +24,15 @@ import kotlinx.coroutines.launch
 fun DragDropList(
     modifier: Modifier,
     listSize: Int,
+    changeListIndex: (from: Int, to: Int) -> Unit,
     content: @Composable (modifier: Modifier, index: Int) -> Unit
 ) {
-    val list = remember { mutableStateListOf(1,2,3) }
+    val list = remember { mutableStateListOf(1,2,3,4,5,6,7,8) }
     val lazyListState = rememberLazyListState()
     val dragAndDropListState =
         rememberDragDropListState(lazyListState) { from, to ->
-            if(from != 0 && to != 0) {
-                list.move(from, to)
+            if(from >= 0 && to >= 0) {
+                changeListIndex(from, to)
             }
         }
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.market.present.theme.PastelYellow
+import com.example.market.present.ui.budget.component.dragdrop.DragDropList
 import com.example.market.present.ui.category.component.CategoryTab
 import com.example.market.present.ui.category.component.CreateBtn
 import com.example.market.present.ui.category.viewmodel.CategoryViewModel
@@ -30,6 +32,7 @@ import com.example.market.present.ui.category.viewmodel.CategoryViewModel
 fun PreviewCategoryScreen() {
     CategoryScreen(
         uiState = CategoryUiState(),
+        changeListIndex = {_,_->}
     )
 }
 
@@ -45,6 +48,7 @@ fun CategoryRoute(
         modifier = modifier,
         uiState = uiState,
         deleteCategory = viewModel::deleteCategory,
+        changeListIndex = viewModel::moveListIndex,
         navigateToCreateCategory = navigateToCreateCategory,
     )
 }
@@ -54,11 +58,9 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
     uiState: CategoryUiState,
     deleteCategory: (categoryId: Int) -> Unit = {},
+    changeListIndex: (from: Int, to: Int) -> Unit,
     navigateToCreateCategory: () -> Unit = {},
 ) {
-
-
-    val scrollState: ScrollState = rememberScrollState()
 
     Box(
         modifier = modifier
@@ -66,36 +68,40 @@ fun CategoryScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
                 .background(PastelYellow)
         ) {
             Text(text = "Category")
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(
-                        max = (uiState.categoryList.size * 50).dp
-                    )
-            ) {
-                items(uiState.categoryList.size) { index ->
-                    CategoryTab(
-                        text = uiState.categoryList[index].categoryName,
-                        onClickBtn = {
-                            deleteCategory(uiState.categoryList[index].categoryId)
-                        }
-                    )
-                }
+            DragDropList(
+                modifier = Modifier,
+                listSize = uiState.categoryList.size,
+                changeListIndex = changeListIndex
+            ) { modifier, index ->
+                CategoryTab(
+                    modifier = modifier,
+                    text = uiState.categoryList[index].categoryName,
+                    onClickBtn = {
+                        deleteCategory(uiState.categoryList[index].categoryId)
+                    }
+                )
             }
         }
 
-        CreateBtn(
+        Row(
             modifier = Modifier
-                .align(Alignment.BottomEnd),
-            onClickBtn = {
-                Log.e("TAG", "CategoryScreen: click", )
-                navigateToCreateCategory()
-            }
-        )
+                .align(Alignment.BottomEnd)
+        ) {
+            CreateBtn(
+                onClickBtn = {
+                    navigateToCreateCategory()
+                }
+            )
+            CreateBtn(
+                onClickBtn = {
+                    Log.e("TAG", "CategoryScreen: click", )
+                    navigateToCreateCategory()
+                }
+            )
+        }
     }
 }

@@ -16,7 +16,7 @@ class BudgetCategoryRepositoryImpl @Inject constructor(
 ) : BudgetCategoryRepository {
 
     override fun createCategory(categoryName: String) {
-        budgetCategoryDao.insertCategory(
+        budgetCategoryDao.insertCategoryWithDisplayIndex(
             BudgetCategoryEntity(
                 categoryName = categoryName
             )

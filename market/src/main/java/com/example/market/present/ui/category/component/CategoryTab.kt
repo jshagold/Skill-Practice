@@ -16,11 +16,12 @@ import com.example.market.R
 
 @Composable
 fun CategoryTab(
+    modifier: Modifier,
     text: String,
     onClickBtn: () -> Unit = {}
 ) {
     ConstraintLayout(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(10.dp)
     ) {
