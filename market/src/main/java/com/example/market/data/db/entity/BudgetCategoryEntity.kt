@@ -15,6 +15,6 @@ data class BudgetCategoryEntity(
     @PrimaryKey(autoGenerate = true)
     var categoryId: Int = 0
 
-    @ColumnInfo(name = "display_index", defaultValue = "0")
+    @ColumnInfo(name = "display_index")
     var displayIndex: Int = categoryId
 }

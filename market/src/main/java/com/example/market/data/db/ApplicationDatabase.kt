@@ -34,7 +34,10 @@ abstract class ApplicationDatabase : RoomDatabase() {
 val migration_1_2 = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
-            "ALTER TABLE budget_category Add COLUMN display_index INTEGER NOT NULL DEFAULT budget_category.categoryId"
+            "ALTER TABLE budget_category Add COLUMN display_index INTEGER NOT NULL DEFAULT 0"
+        )
+        db.execSQL(
+            "UPDATE budget_category SET display_index = categoryId"
         )
         db.execSQL(
             "CREATE UNIQUE INDEX index_budget_category_display_index ON budget_category(display_index)"
