@@ -25,6 +25,12 @@ interface BudgetCategoryDao {
         updateDisplayIndex(id.toInt())
     }
 
+    @Update
+    suspend fun updateCategory(category: BudgetCategoryEntity)
+
+    @Update
+    suspend fun updateAllCategory(vararg category: BudgetCategoryEntity)
+
     @Query("SELECT * FROM budget_category")
     fun getAllCategory(): Flow<List<BudgetCategoryEntity>>
 
@@ -33,9 +39,6 @@ interface BudgetCategoryDao {
 
     @Query("SELECT categoryId FROM budget_category WHERE categoryName = :categoryName")
     fun getCategoryIdByName(categoryName: String): Int
-
-    @Update
-    fun updateCategory(category: BudgetCategoryEntity)
 
     @Delete
     fun deleteCategory(category: BudgetCategoryEntity)

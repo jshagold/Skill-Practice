@@ -7,6 +7,8 @@ interface BudgetCategoryRepository {
 
     fun createCategory(categoryName: String)
 
+    suspend fun updateAllCategory(categoryList: List<BudgetCategory>)
+
     fun getAllCategory(): Flow<List<BudgetCategory>>
 
     fun deleteCategory(categoryId: Int)

@@ -34,9 +34,13 @@ fun BudgetWithCategoryEntity.toBudgetList() : List<Budget> {
 }
 
 fun BudgetCategory.toEntity() : BudgetCategoryEntity {
-    return BudgetCategoryEntity(
-        categoryName = this.categoryName
+    val entity = BudgetCategoryEntity(
+        categoryName = this.categoryName,
+        displayIndex = this.displayIndex
     )
+    entity.categoryId = this.categoryId
+
+    return entity
 }
 
 fun BudgetCategoryEntity.toDomainModel() : BudgetCategory {

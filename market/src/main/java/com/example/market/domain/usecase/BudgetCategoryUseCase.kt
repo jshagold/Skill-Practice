@@ -13,6 +13,10 @@ class BudgetCategoryUseCase @Inject constructor(
         budgetCategoryRepository.createCategory(categoryName)
     }
 
+    suspend fun updateAllCategory(categoryList: List<BudgetCategory>) {
+        budgetCategoryRepository.updateAllCategory(categoryList)
+    }
+
     fun getAllCategory(): Flow<List<BudgetCategory>> {
         return budgetCategoryRepository.getAllCategory()
     }

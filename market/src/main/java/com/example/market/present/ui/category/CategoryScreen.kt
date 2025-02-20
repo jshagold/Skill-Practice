@@ -32,7 +32,8 @@ import com.example.market.present.ui.category.viewmodel.CategoryViewModel
 fun PreviewCategoryScreen() {
     CategoryScreen(
         uiState = CategoryUiState(),
-        changeListIndex = {_,_->}
+        changeListIndex = {_,_->},
+        saveCategoryListIndex = {}
     )
 }
 
@@ -44,11 +45,13 @@ fun CategoryRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+
     CategoryScreen(
         modifier = modifier,
         uiState = uiState,
         deleteCategory = viewModel::deleteCategory,
         changeListIndex = viewModel::moveListIndex,
+        saveCategoryListIndex = viewModel::saveListIndex,
         navigateToCreateCategory = navigateToCreateCategory,
     )
 }
@@ -59,6 +62,7 @@ fun CategoryScreen(
     uiState: CategoryUiState,
     deleteCategory: (categoryId: Int) -> Unit = {},
     changeListIndex: (from: Int, to: Int) -> Unit,
+    saveCategoryListIndex: () -> Unit,
     navigateToCreateCategory: () -> Unit = {},
 ) {
 
@@ -93,7 +97,7 @@ fun CategoryScreen(
         ) {
             CreateBtn(
                 onClickBtn = {
-                    navigateToCreateCategory()
+                    saveCategoryListIndex()
                 }
             )
             CreateBtn(

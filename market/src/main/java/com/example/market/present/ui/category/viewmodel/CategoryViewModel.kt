@@ -57,6 +57,9 @@ class CategoryViewModel @Inject constructor(
 
     fun moveListIndex(from: Int, to: Int) {
         val list = uiState.value.categoryList.toMutableList()
+        val beforeIndex = list[from].displayIndex
+        list[from].displayIndex = list[to].displayIndex
+        list[to].displayIndex = beforeIndex
         list.move(from, to)
         _uiState.update {
             it.copy(
@@ -67,7 +70,8 @@ class CategoryViewModel @Inject constructor(
 
     fun saveListIndex() {
         viewModelScope.launch(Dispatchers.IO) {
-
+            Log.e("saveListIndex", "saveListIndex: ${uiState.value.categoryList}", )
+            budgetCategoryUseCase.updateAllCategory(uiState.value.categoryList)
         }
     }
 }
