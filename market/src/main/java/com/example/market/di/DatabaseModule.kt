@@ -7,6 +7,7 @@ import com.example.market.data.db.dao.BudgetCategoryDao
 import com.example.market.data.db.dao.BudgetDao
 import com.example.market.data.db.dao.BudgetWithCategoryDao
 import com.example.market.data.db.migration_1_2
+import com.example.market.data.db.migration_2_3
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +31,7 @@ object DatabaseModule {
             ApplicationDatabase.ApplicationDatabaseName
         )
             .addMigrations(migration_1_2)
+            .addMigrations(migration_2_3)
             .build()
     }
 

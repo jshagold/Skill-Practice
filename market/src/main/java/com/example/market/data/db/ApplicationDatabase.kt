@@ -19,7 +19,7 @@ import com.example.market.data.db.entity.ShopEntity
         BudgetEntity::class,
         BudgetCategoryEntity::class,
     ],
-    version = 2,
+    version = 3,
 )
 abstract class ApplicationDatabase : RoomDatabase() {
     companion object {
@@ -43,4 +43,13 @@ val migration_1_2 = object : Migration(1, 2) {
             "CREATE UNIQUE INDEX index_budget_category_display_index ON budget_category(display_index)"
         )
     }
+}
+
+val migration_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "DROP INDEX index_budget_category_display_index"
+        )
+    }
+
 }

@@ -7,14 +7,13 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "budget_category",
-    indices = [Index(value = ["display_index"], unique = true)]
 )
 data class BudgetCategoryEntity(
     val categoryName: String,
+    @ColumnInfo(name = "display_index")
+    var displayIndex: Int = 0
 ) {
     @PrimaryKey(autoGenerate = true)
     var categoryId: Int = 0
 
-    @ColumnInfo(name = "display_index")
-    var displayIndex: Int = 0
 }
