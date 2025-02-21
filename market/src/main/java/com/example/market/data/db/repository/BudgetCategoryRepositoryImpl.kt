@@ -29,14 +29,6 @@ class BudgetCategoryRepositoryImpl @Inject constructor(
         }.toTypedArray()
         Log.e("TAG", "updateAllCategory: categoryEntities = ${categoryEntities.toList()}", )
         budgetCategoryDao.updateAllCategory(*categoryEntities)
-
-
-//        categoryList.forEach {
-//            it.toEntity()
-//        }
-//
-//        budgetCategoryDao.updateAllCategory()
-
     }
 
     override fun getAllCategory(): Flow<List<BudgetCategory>> {

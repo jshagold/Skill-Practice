@@ -1,15 +1,11 @@
 package com.example.market.present.ui.budget.screen
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,10 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.market.domain.model.Budget
-import com.example.market.present.theme.PastelYellow
 import com.example.market.present.ui.budget.component.BudgetInfo
 import com.example.market.present.ui.budget.viewmodel.BudgetViewModel
-import com.example.market.present.ui.category.component.CategoryTab
 import com.example.market.present.ui.category.component.CreateBtn
 
 

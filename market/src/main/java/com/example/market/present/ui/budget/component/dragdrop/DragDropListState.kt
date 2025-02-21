@@ -86,7 +86,7 @@ class DragDropListState(
     }
 
     // [드래그가 중단되었을 때 상태를 초기화한다.]
-    // 1. 모든 드래그 관련 상태 변수를 초기값으로 리세하나다ㅣ
+    // 1. 모든 드래그 관련 상태 변수를 초기값으로 설정한다.
     fun onDragInterrupted() {
         initialDraggingElement = null
         currentIndexOfDraggedItem = null

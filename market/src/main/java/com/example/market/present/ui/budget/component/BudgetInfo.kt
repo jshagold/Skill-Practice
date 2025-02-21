@@ -133,7 +133,6 @@ fun BudgetInfo(
                     initialAlpha = 0.3f
                 ),
                 exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut(),
-
                 ) {
                 Image(
                     painter = painterResource(R.drawable.icon_close),

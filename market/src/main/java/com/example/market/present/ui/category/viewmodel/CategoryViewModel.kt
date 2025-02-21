@@ -37,7 +37,7 @@ class CategoryViewModel @Inject constructor(
                 .onEach { categoryList ->
                     _uiState.update {
                         it.copy(
-                            categoryList = categoryList.sortedBy { budgetCategory ->  budgetCategory.displayIndex }
+                            categoryList = categoryList
                         )
                     }
                 }

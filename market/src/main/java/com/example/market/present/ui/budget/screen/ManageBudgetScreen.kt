@@ -139,53 +139,32 @@ fun ManageBudgetScreen(
             color = Color.Black
         )
 
-        DragDropList(
+        LazyColumn(
             modifier = Modifier
+                .verticalScroll(scrollState)
+                .heightIn(max = budgetList.size.times(150.dp))
                 .padding(
                     horizontal = 10.dp
-                ),
-            listSize = budgetList.size,
-            //todo
-            changeListIndex = {_,_->}
-        ) { modifier, index ->
-            BudgetInfo(
-                modifier = modifier,
-                budgetId = budgetList[index].budgetId,
-                categoryName = budgetList[index].categoryName,
-                budget = budgetList[index].budget,
-                memo = budgetList[index].memo,
-                datetime = budgetList[index].inputDateTime,
-                deleteFlag = true,
-                deleteBudget = deleteBudget,
-            )
-        }
+                )
+        ) {
+            item {
+                Text(
+                    text = "Budget List size:${budgetList.size}"
+                )
+            }
 
-//        LazyColumn(
-//            modifier = Modifier
-//                .verticalScroll(scrollState)
-//                .heightIn(max = budgetList.size.times(150.dp))
-//                .padding(
-//                    horizontal = 10.dp
-//                )
-//        ) {
-//            item {
-//                Text(
-//                    text = "Budget List size:${budgetList.size}"
-//                )
-//            }
-//
-//            items(budgetList.size) { index ->
-//                BudgetInfo(
-//                    budgetId = budgetList[index].budgetId,
-//                    categoryName = budgetList[index].categoryName,
-//                    budget = budgetList[index].budget,
-//                    memo = budgetList[index].memo,
-//                    datetime = budgetList[index].inputDateTime,
-//                    deleteFlag = true,
-//                    deleteBudget = deleteBudget,
-//                )
-//            }
-//        }
+            items(budgetList.size) { index ->
+                BudgetInfo(
+                    budgetId = budgetList[index].budgetId,
+                    categoryName = budgetList[index].categoryName,
+                    budget = budgetList[index].budget,
+                    memo = budgetList[index].memo,
+                    datetime = budgetList[index].inputDateTime,
+                    deleteFlag = true,
+                    deleteBudget = deleteBudget,
+                )
+            }
+        }
     }
 
 }
