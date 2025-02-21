@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -105,7 +106,8 @@ fun ManageBudgetScreen(
         EditText(
             placeholder = "Budget",
             inputText = inputBudget,
-            backgroundColor = if(checkStringToFloat(inputBudget.value)) Color.Transparent else Color.Red
+            backgroundColor = if(checkStringToFloat(inputBudget.value)) Color.Transparent else Color.Red,
+            keyboardType = KeyboardType.Number
         )
         EditText(
             placeholder = "Memo",
@@ -113,7 +115,8 @@ fun ManageBudgetScreen(
         )
         EditText(
             placeholder = "DateTime",
-            inputText = inputDatetime
+            inputText = inputDatetime,
+            keyboardType = KeyboardType.Decimal
         )
         Button(
             enabled = checkStringToFloat(inputBudget.value),

@@ -2,6 +2,7 @@ package com.example.market.present.ui.budget.component.dragdrop
 
 import android.util.Log
 import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -46,14 +47,13 @@ fun DragDropList(
     LazyColumn(
         modifier = modifier
             .pointerInput(isActivate) {
-                Log.e("TAG", "DragDropList: isActivate: $isActivate", )
                 if(isActivate) {
-                    detectDragGesturesAfterLongPress(
+                    detectDragGestures(
                         onDrag = { change, offset ->
                             change.consume()
                             dragAndDropListState.onDrag(offset)
 
-                            if(overScrollJob?.isActive == true) return@detectDragGesturesAfterLongPress
+                            if(overScrollJob?.isActive == true) return@detectDragGestures
 
                             dragAndDropListState
                                 .checkOverscroll()

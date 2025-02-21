@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -31,6 +33,7 @@ fun EditText(
     borderColor: Color = Gray,
     paddingVertical: Dp = 0.dp,
     paddingHorizontal: Dp = 0.dp,
+    keyboardType: KeyboardType = KeyboardType.Text,
     modifier: Modifier = Modifier
 ) {
     BasicTextField(
@@ -39,6 +42,7 @@ fun EditText(
             color = textColor
         ),
         onValueChange = { inputText.value = it },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier.then(modifier)
     ) { innerTextField ->
         ConstraintLayout (
