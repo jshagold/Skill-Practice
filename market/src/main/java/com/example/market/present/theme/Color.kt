@@ -20,3 +20,14 @@ val PieGraphColor1 = Color(0xFFF00A81)
 val PieGraphColor2 = Color(0xFF2EBA4D)
 val PieGraphColor3 = Color(0xFFF45C3A)
 val PieGraphColor4 = Color(0xFF505BEE)
+
+val IncomeTheme = Color(0xFF3E8EDE)
+val ExpenseTheme = Color(0xFFF45C3A)
+
+
+val Surface01 = Color(0xFF1A1D1D)
+val Surface03 = Color(0xFF3A3A3D)
+val Surface04 = Color(0xFF47484A)
+val Surface05 = Color(0xFF636366)
+val Surface06 = Color(0xFF8E8E93)
+val Surface07 = Color(0xFFAEAEB2)
