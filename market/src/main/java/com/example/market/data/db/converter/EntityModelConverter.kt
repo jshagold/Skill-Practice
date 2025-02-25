@@ -7,6 +7,16 @@ import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 
 
+fun Budget.toEntity() : BudgetEntity {
+    return BudgetEntity(
+        categoryId = categoryId,
+        budget = budget,
+        memo = memo,
+        dateTime = dateTime,
+        inputDateTime = inputDateTime
+    )
+}
+
 fun BudgetEntity.toDomainModel(category: BudgetCategoryEntity) : Budget {
     return Budget(
         budgetId = budgetId,

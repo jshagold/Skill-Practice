@@ -13,8 +13,8 @@ class BudgetUseCase @Inject constructor(
         budgetRepository.inputBudget(budget)
     }
 
-    fun deleteBudget(budgetId: Long) {
-        budgetRepository.deleteBudget(budgetId)
+    fun deleteBudgetById(budgetId: Long) {
+        budgetRepository.deleteBudgetById(budgetId)
     }
 
     fun getAllBudget(): Flow<List<Budget>> {

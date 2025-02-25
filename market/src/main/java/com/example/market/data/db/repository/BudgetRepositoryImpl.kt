@@ -1,6 +1,7 @@
 package com.example.market.data.db.repository
 
 import com.example.market.data.db.converter.toDomainModel
+import com.example.market.data.db.converter.toEntity
 import com.example.market.data.db.dao.BudgetCategoryDao
 import com.example.market.data.db.dao.BudgetDao
 import com.example.market.data.db.dao.BudgetWithCategoryDao
@@ -62,16 +63,14 @@ class BudgetRepositoryImpl @Inject constructor(
     }
 
     override fun inputBudget(budget: Budget) {
-        budgetDao.insertBudget(budget = BudgetEntity(
-            categoryId = budget.categoryId,
-            budget = budget.budget,
-            memo = budget.memo,
-            dateTime = budget.dateTime,
-            inputDateTime = budget.inputDateTime
-        ))
+        budgetDao.insertBudget(budget = budget.toEntity())
     }
 
-    override fun deleteBudget(budgetId: Long) {
+    override fun deleteBudget(budget: Budget) {
+        budgetDao.deleteBudget(budget = budget.toEntity())
+    }
+
+    override fun deleteBudgetById(budgetId: Long) {
         budgetDao.deleteBudgetByBudgetId(budgetId = budgetId)
     }
 }

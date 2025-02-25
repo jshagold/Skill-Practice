@@ -101,7 +101,7 @@ class ManageBudgetViewModel @Inject constructor(
 
     fun deleteBudget(budgetId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            budgetUseCase.deleteBudget(budgetId)
+            budgetUseCase.deleteBudgetById(budgetId)
         }
     }
 
