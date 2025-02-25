@@ -9,10 +9,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
@@ -23,18 +28,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 
 @Composable
 fun EditText(
+    modifier: Modifier = Modifier,
     inputText: MutableState<String>,
     placeholder: String = "",
     textColor: Color = Black,
     placeholderColor: Color = Gray,
-    backgroundColor: Color = White,
+    backgroundColor: Color = Transparent,
     shape: Shape = RoundedCornerShape(5.dp),
-    borderSize: Dp = 1.dp,
-    borderColor: Color = Gray,
+    borderSize: Dp = 0.dp,
+    borderColor: Color = Transparent,
     paddingVertical: Dp = 0.dp,
     paddingHorizontal: Dp = 0.dp,
     keyboardType: KeyboardType = KeyboardType.Text,
-    modifier: Modifier = Modifier
+    singleLine: Boolean = false,
+    isFocused: MutableState<Boolean> = remember { mutableStateOf(false) },
 ) {
     BasicTextField(
         value = inputText.value,
@@ -43,7 +50,11 @@ fun EditText(
         ),
         onValueChange = { inputText.value = it },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        modifier = Modifier.then(modifier)
+        singleLine = singleLine,
+        modifier = modifier
+            .onFocusChanged { state ->
+                isFocused.value = state.isFocused
+            }
     ) { innerTextField ->
         ConstraintLayout (
             modifier = Modifier

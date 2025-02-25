@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.market.domain.model.BudgetCategory
@@ -21,6 +23,7 @@ fun PreviewCategorySelectBottomSheet() {
 @Composable
 fun CategorySelectBottomSheet(
     modifier: Modifier = Modifier,
+    mainColor: Color = MaterialTheme.colorScheme.primary,
     categoryList: List<BudgetCategory> = listOf(),
     onDismiss: () -> Unit = {},
     onClickCategory: (category: BudgetCategory) -> Unit = {},
@@ -38,6 +41,7 @@ fun CategorySelectBottomSheet(
         ) {
             items(categoryList.size) { index ->
                 CategoryComponent(
+                    mainColor = mainColor,
                     category = categoryList[index],
                     onClick = {
                         onClickCategory(categoryList[index])

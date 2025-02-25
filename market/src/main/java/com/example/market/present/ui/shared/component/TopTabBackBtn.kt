@@ -25,6 +25,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.market.R
 import com.example.market.present.theme.LightColorScheme
+import com.example.market.present.theme.Surface01
 import com.example.market.present.utils.extension.bottomBorder
 import com.example.market.present.utils.extension.noRippleClickable
 
@@ -55,7 +56,7 @@ fun TopTabBackBtn(
             Image(
                 painter = painterResource(R.drawable.icon_arrow_left),
                 contentDescription = R.drawable.icon_arrow_left.toString(),
-                colorFilter = ColorFilter.tint(color = mainColor),
+                colorFilter = ColorFilter.tint(color = Surface01),
                 modifier = Modifier
                     .size(30.dp)
                     .constrainAs(backBtn) {
@@ -68,7 +69,7 @@ fun TopTabBackBtn(
 
             Text(
                 text = text,
-                color = mainColor,
+                color = Surface01,
                 modifier = Modifier
                     .constrainAs(textComponent) {
                         top.linkTo(parent.top)
@@ -82,7 +83,7 @@ fun TopTabBackBtn(
 
         HorizontalDivider(
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.primary
+            color = mainColor
         )
     }
 }

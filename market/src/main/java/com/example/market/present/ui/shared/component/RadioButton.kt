@@ -1,53 +1,60 @@
-package com.example.market.present.ui.budget.component
+package com.example.market.present.ui.shared.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import com.example.market.domain.model.BudgetCategory
+import com.example.market.present.theme.Surface05
+import com.example.market.present.theme.Surface06
+import com.example.market.present.theme.Surface07
 import com.example.market.present.utils.extension.noRippleClickable
+
 
 @Preview
 @Composable
-fun PreviewCategoryComponent() {
-    CategoryComponent(
-        category = BudgetCategory(
-            categoryId = 1,
-            categoryName = "월급",
-            displayIndex = 1,
-        )
+fun PreviewRadioButton() {
+    RadioButton(
+        text = "수입"
     )
 }
 
-
 @Composable
-fun CategoryComponent(
+fun RadioButton(
     modifier: Modifier = Modifier,
-    mainColor: Color = MaterialTheme.colorScheme.primary,
-    category: BudgetCategory,
+    text: String = "",
+    mainColor: Color = Color.Black,
+    isActive: Boolean = false,
     onClick: () -> Unit = {},
 ) {
     ConstraintLayout(
         modifier = modifier
+            .border(
+                width = 1.dp,
+                color = if(isActive) mainColor else Surface06,
+                shape = RoundedCornerShape(5.dp)
+            )
+            .background(
+                color = if(isActive) Color.White else Surface07,
+                shape = RoundedCornerShape(5.dp)
+            )
+            .padding(10.dp)
             .noRippleClickable {
                 onClick()
             }
-            .border(1.dp, mainColor, shape = RoundedCornerShape(5.dp))
-            .padding(5.dp)
     ) {
-        val (imageComponent, textComponent) = createRefs()
+        val textComponent = createRef()
+
         Text(
-            text = category.categoryName,
-            textAlign = TextAlign.Center,
+            text = text,
+            color = if(isActive) mainColor else Surface05,
             modifier = Modifier
                 .constrainAs(textComponent) {
                     top.linkTo(parent.top)
