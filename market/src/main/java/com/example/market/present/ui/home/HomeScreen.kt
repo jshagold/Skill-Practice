@@ -74,16 +74,14 @@ fun HomeScreen(
 
             var startAngle: Float = -90f
             pieList.forEachIndexed { index, pie ->
-                val sweepAngle: Float = startAngle + pie.second
-
                 drawArc(
                     color = colorList[ index % 4 ],
                     startAngle = startAngle,
-                    sweepAngle = sweepAngle,
+                    sweepAngle = pie.second,
                     useCenter = true,
                     style = Fill
                 )
-                startAngle += sweepAngle
+                startAngle += pie.second
             }
 
 
