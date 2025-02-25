@@ -5,5 +5,8 @@ import com.example.market.domain.model.BudgetCategory
 
 data class ManageBudgetUiState(
     val categoryList: List<BudgetCategory> = listOf(),
-    val budgetList: List<Budget> = listOf()
+    val budgetList: List<Budget> = listOf(),
+    val selectedCategory: BudgetCategory? = null,
+
+    val isOpenCategoryBottomSheet: Boolean = false
 )

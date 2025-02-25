@@ -1,9 +1,12 @@
 package com.example.market.present.ui.budget.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,9 +34,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 import com.example.market.present.ui.budget.component.BudgetInfo
-import com.example.market.present.ui.budget.component.dragdrop.DragDropList
+import com.example.market.present.ui.budget.component.CategorySelectBottomSheet
+import com.example.market.present.ui.budget.component.CategoryTab
 import com.example.market.present.ui.budget.viewmodel.ManageBudgetViewModel
-import com.example.market.present.ui.component.EditText
+import com.example.market.present.ui.shared.component.EditText
+import com.example.market.present.ui.shared.component.TopTabBackBtn
 import com.example.market.present.utils.checkStringToFloat
 import com.example.market.present.utils.extension.noRippleClickable
 
@@ -42,7 +47,7 @@ import com.example.market.present.utils.extension.noRippleClickable
 @Composable
 fun PreviewManageBudgetScreen() {
     ManageBudgetScreen(
-        createBudget = {_,_,_,_ ->}
+        createBudget = {_,_,_ ->}
     )
 }
 
@@ -56,25 +61,39 @@ fun ManageBudgetRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ManageBudgetScreen(
-        categoryList = uiState.categoryList,
+        toBackScreen = { navController.popBackStack() },
         budgetList = uiState.budgetList,
+        selectedCategory = listOf(uiState.selectedCategory),
+        tabCategoryTab = {
+            viewModel.openCloseCategoryBottomSheet(true)
+        },
         createBudget = viewModel::createBudget,
         deleteBudget = viewModel::deleteBudget
     )
+
+    if(uiState.isOpenCategoryBottomSheet) {
+        CategorySelectBottomSheet(
+            categoryList = uiState.categoryList,
+            onDismiss = {
+                viewModel.openCloseCategoryBottomSheet(false)
+            },
+            onClickCategory = viewModel::selectCategory
+        )
+    }
 }
 
 
 @Composable
 fun ManageBudgetScreen(
     modifier: Modifier = Modifier,
-    categoryList: List<BudgetCategory> = listOf(),
+    toBackScreen: () -> Unit = {},
     budgetList: List<Budget> = listOf(),
-    createBudget: (categoryId: Int, budget: Float, memo: String, datetime: String) -> Unit,
+    selectedCategory: List<BudgetCategory?> = listOf(),
+    tabCategoryTab: () -> Unit = {},
+    createBudget: (budget: Float, memo: String, datetime: String) -> Unit,
     deleteBudget: (budgetId: Long) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
-
-    val selectedCategoryIndex = remember { mutableIntStateOf(0) }
 
     val inputBudget = remember { mutableStateOf("") }
     val inputMemo = remember { mutableStateOf("") }
@@ -83,91 +102,94 @@ fun ManageBudgetScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(Color.White)
     ) {
-        Text(text = "Manage Budget")
-
-        LazyRow(
+        TopTabBackBtn(
+            text = "Manage Budget",
+            toBackScreen = toBackScreen
+        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            items(categoryList.size) { index ->
-                Text(
-                    text = categoryList[index].categoryName,
-                    modifier = Modifier
-                        .background(color = if(index == selectedCategoryIndex.intValue) Color.Gray else Color.Transparent)
-                        .padding(10.dp)
-                        .noRippleClickable {
-                            selectedCategoryIndex.intValue = index
-                        }
+                .padding(
+                    top = 10.dp,
+                    start = 10.dp,
+                    end = 10.dp
                 )
-            }
-        }
+        ) {
 
-        EditText(
-            placeholder = "Budget",
-            inputText = inputBudget,
-            backgroundColor = if(checkStringToFloat(inputBudget.value)) Color.Transparent else Color.Red,
-            keyboardType = KeyboardType.Number
-        )
-        EditText(
-            placeholder = "Memo",
-            inputText = inputMemo
-        )
-        EditText(
-            placeholder = "DateTime",
-            inputText = inputDatetime,
-            keyboardType = KeyboardType.Decimal
-        )
-        Button(
-            enabled = checkStringToFloat(inputBudget.value),
-            onClick = {
-                if(checkStringToFloat(inputBudget.value)) {
-                    createBudget(
-                        categoryList[selectedCategoryIndex.intValue].categoryId,
-                        inputBudget.value.toFloat(),
-                        inputMemo.value,
-                        inputDatetime.value,
+            EditText(
+                placeholder = "Budget",
+                inputText = inputBudget,
+                backgroundColor = if(checkStringToFloat(inputBudget.value)) Color.Transparent else Color.Red,
+                keyboardType = KeyboardType.Number
+            )
+
+            CategoryTab(
+                modifier = Modifier,
+                tabContents = tabCategoryTab,
+                selectedCategory = selectedCategory
+            )
+
+            EditText(
+                placeholder = "Memo",
+                inputText = inputMemo
+            )
+            EditText(
+                placeholder = "DateTime",
+                inputText = inputDatetime,
+                keyboardType = KeyboardType.Decimal
+            )
+            Button(
+                enabled = checkStringToFloat(inputBudget.value),
+                onClick = {
+                    if(checkStringToFloat(inputBudget.value)) {
+                        createBudget(
+                            inputBudget.value.toFloat(),
+                            inputMemo.value,
+                            inputDatetime.value,
+                        )
+                    }
+
+                }
+            ) {
+                Text(text = "create")
+            }
+
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(10.dp),
+                thickness = 2.dp,
+                color = Color.Black
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .heightIn(max = budgetList.size.times(150.dp))
+                    .padding(
+                        horizontal = 10.dp
+                    )
+            ) {
+                item {
+                    Text(
+                        text = "Budget List size:${budgetList.size}"
                     )
                 }
 
-            }
-        ) {
-            Text(text = "create")
-        }
-
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(10.dp),
-            thickness = 2.dp,
-            color = Color.Black
-        )
-
-        LazyColumn(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .heightIn(max = budgetList.size.times(150.dp))
-                .padding(
-                    horizontal = 10.dp
-                )
-        ) {
-            item {
-                Text(
-                    text = "Budget List size:${budgetList.size}"
-                )
-            }
-
-            items(budgetList.size) { index ->
-                BudgetInfo(
-                    budgetId = budgetList[index].budgetId,
-                    categoryName = budgetList[index].categoryName,
-                    budget = budgetList[index].budget,
-                    memo = budgetList[index].memo,
-                    datetime = budgetList[index].inputDateTime,
-                    deleteFlag = true,
-                    deleteBudget = deleteBudget,
-                )
+                items(budgetList.size) { index ->
+                    BudgetInfo(
+                        budgetId = budgetList[index].budgetId,
+                        categoryName = budgetList[index].categoryName,
+                        budget = budgetList[index].budget,
+                        memo = budgetList[index].memo,
+                        datetime = budgetList[index].inputDateTime,
+                        deleteFlag = true,
+                        deleteBudget = deleteBudget,
+                    )
+                }
             }
         }
+
     }
-
 }

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.market.present.ui.category.viewmodel.CreateCategoryViewModel
-import com.example.market.present.ui.component.EditText
+import com.example.market.present.ui.shared.component.EditText
 
 @Composable
 fun CreateCategoryRoute(

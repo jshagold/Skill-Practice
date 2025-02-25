@@ -6,7 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
 import com.example.market.present.ui.budget.component.dragdrop.DragDropListState
 
@@ -40,6 +44,21 @@ fun Modifier.dragModifier(index: Int, dragAndDropListState: DragDropListState) =
             translationY = offsetOrNull ?: 0f
             scaleX = if (isDragging) 1.05f else 1f
             scaleY = if (isDragging) 1.05f else 1f
+        }
+}
+
+
+/**
+ * Bottom Border
+ */
+fun Modifier.bottomBorder(thickness: Dp, color: Color): Modifier = composed {
+    this.drawBehind {
+            drawLine(
+                color = color,
+                start = Offset(0f, size.height - thickness.toPx()/2),
+                end = Offset(size.width, size.height - thickness.toPx()/2),
+                strokeWidth = thickness.toPx()
+            )
         }
 }
 

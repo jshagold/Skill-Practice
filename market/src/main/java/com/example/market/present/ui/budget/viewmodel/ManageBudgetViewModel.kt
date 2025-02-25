@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.market.domain.model.Budget
+import com.example.market.domain.model.BudgetCategory
 import com.example.market.domain.usecase.BudgetCategoryUseCase
 import com.example.market.domain.usecase.BudgetUseCase
 import com.example.market.present.ui.budget.state.ManageBudgetUiState
@@ -40,6 +41,26 @@ class ManageBudgetViewModel @Inject constructor(
         }
     }
 
+    /** Screen 관련 **/
+
+    fun openCloseCategoryBottomSheet(value: Boolean) {
+        _uiState.update {
+            it.copy(
+                isOpenCategoryBottomSheet = value
+            )
+        }
+    }
+
+    fun selectCategory(category: BudgetCategory) {
+        _uiState.update {
+            it.copy(
+                selectedCategory = category
+            )
+        }
+    }
+
+
+    /** 데이터 관련 **/
 
     private fun getAllCategory() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -58,21 +79,23 @@ class ManageBudgetViewModel @Inject constructor(
         }
     }
 
-    fun createBudget (categoryId: Int, budget: Float, memo: String, datetime: String) {
+    fun createBudget (budget: Float, memo: String, datetime: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+            uiState.value.selectedCategory?.let {
+                val nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
 
-            val budgetDataClass = Budget(
-                budgetId = 0,
-                categoryId = categoryId,
-                categoryName = "",
-                budget = budget,
-                memo = memo,
-                dateTime = nowDateTime,
-                inputDateTime = datetime.ifEmpty { nowDateTime }
-            )
+                val budgetDataClass = Budget(
+                    budgetId = 0,
+                    categoryId = uiState.value.selectedCategory!!.categoryId,
+                    categoryName = "",
+                    budget = budget,
+                    memo = memo,
+                    dateTime = nowDateTime,
+                    inputDateTime = datetime.ifEmpty { nowDateTime }
+                )
 
-            budgetUseCase.inputBudget(budgetDataClass)
+                budgetUseCase.inputBudget(budgetDataClass)
+            }
         }
     }
 

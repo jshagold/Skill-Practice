@@ -1,4 +1,4 @@
-package com.example.market.present.ui.component
+package com.example.market.present.ui.shared.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
