@@ -9,8 +9,12 @@
     <string name="budget_tab_label">금액</string>
     <string name="category_tab_label">분류</string>
     <string name="memo_tab_label">메모</string>
+    <string name="datetime_tab_label">날짜</string>
+    <string name="datetime_tab_label_placeholder">날짜를 입력해 주세요</string>
 
     <string name="budget_type_income">수입</string>
     <string name="budget_type_expense">지출</string>
+
+    <string name="manage_budget_screen_create_btn">저장</string>
 
 </resources>

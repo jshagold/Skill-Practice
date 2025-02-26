@@ -26,8 +26,9 @@ val ExpenseTheme = Color(0xFFF45C3A)
 
 
 val Surface01 = Color(0xFF1A1D1D)
-val Surface03 = Color(0xFF3A3A3D)
+val Surface03 = Color(0xFF000000)
 val Surface04 = Color(0xFF47484A)
 val Surface05 = Color(0xFF636366)
 val Surface06 = Color(0xFF8E8E93)
 val Surface07 = Color(0xFFAEAEB2)
+val Surface08 = Color(0xFFDADADA)

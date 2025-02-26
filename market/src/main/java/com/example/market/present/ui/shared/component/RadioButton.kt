@@ -15,6 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.market.present.theme.Surface05
 import com.example.market.present.theme.Surface06
 import com.example.market.present.theme.Surface07
+import com.example.market.present.theme.Surface08
 import com.example.market.present.utils.extension.noRippleClickable
 
 
@@ -38,14 +39,14 @@ fun RadioButton(
         modifier = modifier
             .border(
                 width = 1.dp,
-                color = if(isActive) mainColor else Surface06,
+                color = if(isActive) mainColor else Surface08,
                 shape = RoundedCornerShape(5.dp)
             )
             .background(
-                color = if(isActive) Color.White else Surface07,
+                color = if(isActive) Color.White else Surface08,
                 shape = RoundedCornerShape(5.dp)
             )
-            .padding(10.dp)
+            .padding(5.dp)
             .noRippleClickable {
                 onClick()
             }
