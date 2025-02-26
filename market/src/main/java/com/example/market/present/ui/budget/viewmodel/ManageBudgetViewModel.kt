@@ -59,6 +59,22 @@ class ManageBudgetViewModel @Inject constructor(
         }
     }
 
+    fun openCloseDatePicker(value: Boolean) {
+        _uiState.update {
+            it.copy(
+                isOpenDateTimePicker = value
+            )
+        }
+    }
+
+    fun selectDateTime(dateTime: LocalDateTime) {
+        _uiState.update {
+            it.copy(
+                selectedDateTime = dateTime
+            )
+        }
+    }
+
 
     /** 데이터 관련 **/
 
@@ -79,10 +95,10 @@ class ManageBudgetViewModel @Inject constructor(
         }
     }
 
-    fun createBudget (budget: Float, memo: String, datetime: String) {
+    fun createBudget (budget: Float, memo: String) {
         viewModelScope.launch(Dispatchers.IO) {
             uiState.value.selectedCategory?.let {
-                val nowDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+                val inputDateTime = uiState.value.selectedDateTime?.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")).toString()
 
                 val budgetDataClass = Budget(
                     budgetId = 0,
@@ -90,8 +106,8 @@ class ManageBudgetViewModel @Inject constructor(
                     categoryName = "",
                     budget = budget,
                     memo = memo,
-                    dateTime = nowDateTime,
-                    inputDateTime = datetime.ifEmpty { nowDateTime }
+                    dateTime = inputDateTime,
+                    inputDateTime = inputDateTime
                 )
 
                 budgetUseCase.inputBudget(budgetDataClass)

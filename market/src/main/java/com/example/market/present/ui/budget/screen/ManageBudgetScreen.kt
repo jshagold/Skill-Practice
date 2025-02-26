@@ -4,13 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,26 +35,31 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.market.R
 import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 import com.example.market.domain.model.enums.BudgetType
+import com.example.market.present.theme.Surface07
 import com.example.market.present.ui.budget.component.BudgetInfo
 import com.example.market.present.ui.budget.component.BudgetTab
 import com.example.market.present.ui.budget.component.BudgetTypeRadioBtn
 import com.example.market.present.ui.budget.component.CategorySelectBottomSheet
 import com.example.market.present.ui.budget.component.CategoryTab
+import com.example.market.present.ui.budget.component.DatePickerModal
+import com.example.market.present.ui.budget.component.DatetimeTab
 import com.example.market.present.ui.budget.component.MemoTab
 import com.example.market.present.ui.budget.viewmodel.ManageBudgetViewModel
 import com.example.market.present.ui.shared.component.EditText
 import com.example.market.present.ui.shared.component.TopTabBackBtn
 import com.example.market.present.utils.checkStringToFloat
+import java.time.LocalDateTime
 
 
 @Preview
 @Composable
 fun PreviewManageBudgetScreen() {
     ManageBudgetScreen(
-        createBudget = {_,_,_ ->}
+        createBudget = {_,_ ->}
     )
 }
 
@@ -65,11 +76,18 @@ fun ManageBudgetRoute(
         toBackScreen = { navController.popBackStack() },
         budgetList = uiState.budgetList,
         selectedCategory = listOf(uiState.selectedCategory),
+        selectedDateTime = uiState.selectedDateTime,
         tabCategoryTab = {
             viewModel.openCloseCategoryBottomSheet(true)
         },
+        tabDateTimeTab = {
+            viewModel.openCloseDatePicker(true)
+        },
         onFocusCategoryTab = uiState.isOpenCategoryBottomSheet,
-        createBudget = viewModel::createBudget,
+        createBudget = { budget, memo ->
+            viewModel.createBudget(budget, memo)
+            navController.popBackStack()
+        },
         deleteBudget = viewModel::deleteBudget
     )
 
@@ -83,6 +101,19 @@ fun ManageBudgetRoute(
             onClickCategory = viewModel::selectCategory
         )
     }
+
+    if(uiState.isOpenDateTimePicker) {
+        DatePickerModal(
+            initialLocalDateTime = uiState.selectedDateTime,
+            onDateSelected = { localDateTime ->
+                viewModel.selectDateTime(localDateTime)
+                viewModel.openCloseDatePicker(false)
+            },
+            onDismiss = {
+                viewModel.openCloseDatePicker(false)
+            }
+        )
+    }
 }
 
 
@@ -92,9 +123,11 @@ fun ManageBudgetScreen(
     toBackScreen: () -> Unit = {},
     budgetList: List<Budget> = listOf(),
     selectedCategory: List<BudgetCategory?> = listOf(),
+    selectedDateTime: LocalDateTime? = null,
     tabCategoryTab: () -> Unit = {},
+    tabDateTimeTab: () -> Unit = {},
     onFocusCategoryTab: Boolean = false,
-    createBudget: (budget: Float, memo: String, datetime: String) -> Unit,
+    createBudget: (budget: Float, memo: String) -> Unit,
     deleteBudget: (budgetId: Long) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
@@ -103,7 +136,6 @@ fun ManageBudgetScreen(
     val selectedType = remember { mutableStateOf(BudgetType.EXPENSE) }
     val inputBudget = remember { mutableStateOf("") }
     val inputMemo = remember { mutableStateOf("") }
-    val inputDatetime = remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -147,62 +179,44 @@ fun ManageBudgetScreen(
                 onFocus = onFocusCategoryTab
             )
 
+            DatetimeTab(
+                modifier = Modifier,
+                inputDate = selectedDateTime,
+                mainColor = selectedType.value.color,
+                onClickTab = {
+                    tabDateTimeTab()
+                }
+            )
+
             MemoTab(
                 modifier = Modifier,
                 inputText = inputMemo,
                 mainColor = selectedType.value.color
             )
 
-            EditText(
-                placeholder = "DateTime",
-                inputText = inputDatetime,
-                keyboardType = KeyboardType.Decimal
-            )
+            Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 enabled = checkStringToFloat(inputBudget.value),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonColors(
+                    containerColor = selectedType.value.color,
+                    contentColor = Color.White,
+                    disabledContainerColor = Surface07,
+                    disabledContentColor = Color.White
+                ),
                 onClick = {
                     createBudget(
                         inputBudget.value.toFloat(),
                         inputMemo.value,
-                        inputDatetime.value,
                     )
-                }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Text(text = "create")
+                Text(text = stringResource(R.string.manage_budget_screen_create_btn))
             }
 
-            HorizontalDivider(
-                modifier = Modifier
-                    .padding(10.dp),
-                thickness = 2.dp,
-                color = Color.Black
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .heightIn(max = budgetList.size.times(150.dp))
-                    .padding(
-                        horizontal = 10.dp
-                    )
-            ) {
-                item {
-                    Text(
-                        text = "Budget List size:${budgetList.size}"
-                    )
-                }
-
-                items(budgetList.size) { index ->
-                    BudgetInfo(
-                        budgetId = budgetList[index].budgetId,
-                        categoryName = budgetList[index].categoryName,
-                        budget = budgetList[index].budget,
-                        memo = budgetList[index].memo,
-                        datetime = budgetList[index].inputDateTime,
-                        deleteFlag = true,
-                        deleteBudget = deleteBudget,
-                    )
-                }
-            }
         }
 
     }
