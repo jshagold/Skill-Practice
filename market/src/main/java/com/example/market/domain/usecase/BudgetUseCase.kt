@@ -3,6 +3,7 @@ package com.example.market.domain.usecase
 import com.example.market.domain.model.Budget
 import com.example.market.domain.repository.BudgetRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class BudgetUseCase @Inject constructor(
@@ -19,6 +20,12 @@ class BudgetUseCase @Inject constructor(
 
     fun getAllBudget(): Flow<List<Budget>> {
         return budgetRepository.getAllBudget()
+    }
+
+    fun getAllBudgetByMonthSortedByDay(month: String): Flow<List<Budget>> {
+        return budgetRepository.getAllBudgetByMonth(month).map { budgetList ->
+            budgetList.sortedBy { it.inputDateTime }
+        }
     }
 
     fun getTotalIncome(): Flow<Float> {

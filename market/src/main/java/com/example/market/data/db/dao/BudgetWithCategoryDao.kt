@@ -18,6 +18,9 @@ interface BudgetWithCategoryDao {
     @Query("SELECT * FROM budget_category WHERE categoryName = :categoryName")
     fun getAllBudgetWithCategoryByCategoryName(categoryName: String): List<BudgetWithCategoryEntity>
 
+    @Query("SELECT * FROM budget_category AS category INNER JOIN budget ON budget.categoryId = category.categoryId WHERE SUBSTR(budget.dateTime, 1, 6) = :month")
+    fun getAllBudgetWithCategoryByMonth(month: String): Flow<Map<BudgetCategoryEntity, List<BudgetEntity>>>
+
     @Query(
         "SELECT * FROM budget_category AS category INNER JOIN budget ON budget.categoryId = category.categoryId WHERE budget.budget >= 0"
     )

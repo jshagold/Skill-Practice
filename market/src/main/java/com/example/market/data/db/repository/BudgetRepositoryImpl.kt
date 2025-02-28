@@ -5,6 +5,7 @@ import com.example.market.data.db.converter.toEntity
 import com.example.market.data.db.dao.BudgetCategoryDao
 import com.example.market.data.db.dao.BudgetDao
 import com.example.market.data.db.dao.BudgetWithCategoryDao
+import com.example.market.data.db.entity.BudgetCategoryEntity
 import com.example.market.data.db.entity.BudgetEntity
 import com.example.market.domain.model.Budget
 import com.example.market.domain.repository.BudgetRepository
@@ -29,6 +30,19 @@ class BudgetRepositoryImpl @Inject constructor(
 
         return budgetList
     }
+
+    override fun getAllBudgetByMonth(month: String): Flow<List<Budget>> {
+        val budgetWithCategoryList = budgetWithCategoryDao.getAllBudgetWithCategoryByMonth(month)
+
+        return budgetWithCategoryList.map { map: Map<BudgetCategoryEntity, List<BudgetEntity>> ->
+            map.flatMap { (budgetCategoryEntity, budgetEntityList) ->
+                budgetEntityList.map { budgetEntity ->
+                    budgetEntity.toDomainModel(budgetCategoryEntity)
+                }
+            }
+        }
+    }
+
 
     override fun getPositiveBudget(): Flow<List<Budget>> {
         return budgetWithCategoryDao.getPositiveBudget().map { map ->

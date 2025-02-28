@@ -7,6 +7,11 @@ interface BudgetRepository {
 
     fun getAllBudget() : Flow<List<Budget>>
 
+    /**
+     * @month: String - yyyyMM 포맷
+     */
+    fun getAllBudgetByMonth(month: String): Flow<List<Budget>>
+
     fun getPositiveBudget(): Flow<List<Budget>>
 
     fun getNegativeBudget(): Flow<List<Budget>>
