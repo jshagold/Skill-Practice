@@ -102,7 +102,7 @@ fun DatetimeTab(
                 )
             } else {
                 Text(
-                    text = inputDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd (E)")),
+                    text = inputDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd (E) a hh:mm")),
                     color = Color.Black,
                     modifier = Modifier
                         .constrainAs(textComponent) {
