@@ -62,7 +62,7 @@ class ManageBudgetViewModel @Inject constructor(
     fun openCloseDatePicker(value: Boolean) {
         _uiState.update {
             it.copy(
-                isOpenDateTimePicker = value
+                isOpenDatePicker = value
             )
         }
     }
@@ -71,6 +71,14 @@ class ManageBudgetViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 selectedDateTime = dateTime
+            )
+        }
+    }
+
+    fun openCloseTimePicker(value: Boolean) {
+        _uiState.update {
+            it.copy(
+                isOpenTimePicker = value
             )
         }
     }

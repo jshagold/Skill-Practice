@@ -11,5 +11,6 @@ data class ManageBudgetUiState(
     val selectedDateTime: LocalDateTime? = null,
 
     val isOpenCategoryBottomSheet: Boolean = false,
-    val isOpenDateTimePicker: Boolean = false,
+    val isOpenDatePicker: Boolean = false,
+    val isOpenTimePicker: Boolean = false,
 )

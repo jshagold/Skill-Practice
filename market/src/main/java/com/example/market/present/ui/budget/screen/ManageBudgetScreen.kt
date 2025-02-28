@@ -1,5 +1,6 @@
 package com.example.market.present.ui.budget.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -8,15 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,10 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -40,7 +36,6 @@ import com.example.market.domain.model.Budget
 import com.example.market.domain.model.BudgetCategory
 import com.example.market.domain.model.enums.BudgetType
 import com.example.market.present.theme.Surface07
-import com.example.market.present.ui.budget.component.BudgetInfo
 import com.example.market.present.ui.budget.component.BudgetTab
 import com.example.market.present.ui.budget.component.BudgetTypeRadioBtn
 import com.example.market.present.ui.budget.component.CategorySelectBottomSheet
@@ -48,8 +43,8 @@ import com.example.market.present.ui.budget.component.CategoryTab
 import com.example.market.present.ui.budget.component.DatePickerModal
 import com.example.market.present.ui.budget.component.DatetimeTab
 import com.example.market.present.ui.budget.component.MemoTab
+import com.example.market.present.ui.budget.component.TimePickerModal
 import com.example.market.present.ui.budget.viewmodel.ManageBudgetViewModel
-import com.example.market.present.ui.shared.component.EditText
 import com.example.market.present.ui.shared.component.TopTabBackBtn
 import com.example.market.present.utils.checkStringToFloat
 import java.time.LocalDateTime
@@ -102,16 +97,30 @@ fun ManageBudgetRoute(
         )
     }
 
-    if(uiState.isOpenDateTimePicker) {
+    if(uiState.isOpenDatePicker) {
         DatePickerModal(
             initialLocalDateTime = uiState.selectedDateTime,
             onDateSelected = { localDateTime ->
-                viewModel.selectDateTime(localDateTime)
                 viewModel.openCloseDatePicker(false)
+                viewModel.openCloseTimePicker(true)
+                viewModel.selectDateTime(localDateTime)
             },
             onDismiss = {
                 viewModel.openCloseDatePicker(false)
             }
+        )
+    }
+
+    if(uiState.isOpenTimePicker) {
+        TimePickerModal(
+            initialLocalDateTime = uiState.selectedDateTime,
+            onConfirm = { localDateTime ->
+                viewModel.openCloseTimePicker(false)
+                viewModel.selectDateTime(localDateTime)
+            },
+            onDismiss = {
+                viewModel.openCloseTimePicker(false)
+            },
         )
     }
 }
