@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,8 +23,8 @@ fun CreateBtn(
 ) {
     Box(
         modifier = modifier
-            .background(color = PrimaryGreen, shape = CircleShape)
-            .size(75.dp)
+            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+            .size(60.dp)
             .noRippleClickable {
                 onClickBtn()
             }

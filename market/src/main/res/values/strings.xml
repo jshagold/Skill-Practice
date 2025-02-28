@@ -17,4 +17,8 @@
 
     <string name="manage_budget_screen_create_btn">저장</string>
 
+    <string name="budget_screen_type_daily">하루별</string>
+    <string name="budget_screen_type_monthly">월별</string>
+    <string name="budget_screen_type_calendar">달력</string>
+
 </resources>
