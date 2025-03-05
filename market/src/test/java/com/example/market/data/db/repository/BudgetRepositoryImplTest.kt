@@ -2,6 +2,7 @@ package com.example.market.data.db.repository
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.market.data.db.ApplicationDatabase
 import com.example.market.data.db.dao.BudgetCategoryDao
 import com.example.market.data.db.dao.BudgetDao
@@ -14,8 +15,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
-
+@RunWith(AndroidJUnit4::class)
 class BudgetRepositoryImplTest {
 
     lateinit var database: ApplicationDatabase
@@ -32,7 +34,7 @@ class BudgetRepositoryImplTest {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             ApplicationDatabase::class.java
-        ).allowMainThreadQueries().build()
+        ).build()
 
         budgetDao = database.budgetDao()
         budgetCategoryDao = database.budgetCategoryDao()

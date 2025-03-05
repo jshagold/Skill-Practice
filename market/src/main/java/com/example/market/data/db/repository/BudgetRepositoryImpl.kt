@@ -72,6 +72,10 @@ class BudgetRepositoryImpl @Inject constructor(
         return budgetDao.getTotalIncome()
     }
 
+    override fun getTotalIncomeByMonth(month: String): Flow<Float> {
+        return budgetDao.getTotalIncomeByMonth(month)
+    }
+
     override fun getRemainBalance(): Flow<Float> {
         return budgetDao.getRemainBalance()
     }

@@ -17,7 +17,7 @@ interface BudgetDao {
     @Query("SELECT * FROM budget")
     fun getAllBudget(): List<BudgetEntity>
 
-    @Query("SELECT * FROM budget WHERE SUBSTR(dateTime, 5, 2) = :month")
+    @Query("SELECT * FROM budget WHERE SUBSTR(dateTime, 1, 6) = :month")
     fun getAllBudgetByMonth(month: String): Flow<List<BudgetEntity>>
 
     @Query("SELECT * FROM budget WHERE budget >= 0")
@@ -28,6 +28,9 @@ interface BudgetDao {
 
     @Query("SELECT SUM(budget) FROM budget WHERE budget >= 0")
     fun getTotalIncome(): Flow<Float>
+
+    @Query("SELECT SUM(budget) FROM budget WHERE SUBSTR(dateTime, 1, 6) = :month AND budget >= 0")
+    fun getTotalIncomeByMonth(month: String): Flow<Float>
 
     @Query("SELECT SUM(budget) FROM budget")
     fun getRemainBalance(): Flow<Float>

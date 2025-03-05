@@ -55,6 +55,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -66,6 +67,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -79,9 +81,9 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     // JUnit5
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
+//    testImplementation(libs.junit.jupiter.api)
+//    testRuntimeOnly(libs.junit.jupiter.engine)
+//    testImplementation(libs.junit.jupiter.params)
 
     // truth (replaced by assertJ)
     debugImplementation(libs.truth)

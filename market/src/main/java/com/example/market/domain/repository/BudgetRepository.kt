@@ -8,7 +8,9 @@ interface BudgetRepository {
     fun getAllBudget() : Flow<List<Budget>>
 
     /**
-     * @month: String - yyyyMM 포맷
+     * 입력받은 연월의 모든 Budget List
+     * @param month String / yyyyMM 포맷
+     * @return Flow<List<Budget>>
      */
     fun getAllBudgetByMonth(month: String): Flow<List<Budget>>
 
@@ -17,6 +19,13 @@ interface BudgetRepository {
     fun getNegativeBudget(): Flow<List<Budget>>
 
     fun getTotalIncome(): Flow<Float>
+
+    /**
+     * 입력받은 연월의 모든 수입(0이상)의 총합
+     * @param month String / yyyyMM
+     * @return Flow<Float>
+     */
+    fun getTotalIncomeByMonth(month: String): Flow<Float>
 
     fun getRemainBalance(): Flow<Float>
 

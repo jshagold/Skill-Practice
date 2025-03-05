@@ -1,7 +1,5 @@
 package com.example.myapplication.algorithm
 
-import org.checkerframework.checker.units.qual.m
-
 // https://www.acmicpc.net/problem/1436 - 영화감독 숌
 class BJ1436 {
     val numList = List(10) { it }

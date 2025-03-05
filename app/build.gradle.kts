@@ -77,7 +77,7 @@ dependencies {
     testImplementation(libs.truth)
 
     // mockito & mockk
-//    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.core)
 //    testImplementation(libs.mockito.kotlin)
 //    testImplementation(libs.mockk)
 
