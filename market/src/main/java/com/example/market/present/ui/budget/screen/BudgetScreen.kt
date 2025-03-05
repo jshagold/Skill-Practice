@@ -34,13 +34,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.market.R
 import com.example.market.domain.model.Budget
+import com.example.market.domain.model.enums.BudgetDateType
 import com.example.market.domain.model.enums.BudgetScreenType
 import com.example.market.present.theme.Surface04
 import com.example.market.present.theme.Surface07
 import com.example.market.present.theme.Surface08
+import com.example.market.present.ui.budget.component.BudgetHeaderTab
 import com.example.market.present.ui.budget.component.BudgetInfo
 import com.example.market.present.ui.budget.viewmodel.BudgetViewModel
 import com.example.market.present.ui.category.component.CreateBtn
+import com.example.market.present.ui.shared.component.YearMonthPicker
+import java.time.LocalDate
 
 
 @Preview
@@ -58,14 +62,45 @@ fun BudgetRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BudgetScreen(
+        dateType = uiState.dateType,
+        selectedDate = uiState.selectedDate,
+        onClickTab = viewModel::changeBudgetDateType,
+        onClickSelectedDate = {
+            viewModel.openCloseMonthPicker(true)
+        },
+        onClickBeforeDate = {
+            viewModel.setBeforeDate()
+        },
+        onClickAfterDate = {
+            viewModel.setAfterDate()
+        },
         navigateToManageBudget = navigateToManageBudget
     )
+
+    if(uiState.isOpenMonthPicker) {
+        YearMonthPicker(
+            selectedDate = uiState.selectedDate,
+            clickClose = {
+                viewModel.openCloseMonthPicker(false)
+            },
+            clickDate = { date ->
+                viewModel.selectDate(date)
+                viewModel.openCloseMonthPicker(false)
+            }
+        )
+    }
 }
 
 
 @Composable
 fun BudgetScreen(
     modifier: Modifier = Modifier,
+    dateType: BudgetDateType = BudgetDateType.MONTH,
+    selectedDate: LocalDate = LocalDate.now(),
+    onClickTab: (dateType: BudgetDateType) -> Unit = {},
+    onClickBeforeDate: () -> Unit = {},
+    onClickAfterDate: () -> Unit = {},
+    onClickSelectedDate: () -> Unit = {},
     navigateToManageBudget: () -> Unit = {},
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -86,11 +121,15 @@ fun BudgetScreen(
                     .fillMaxSize()
                     .background(White)
             ) {
-                Text(
-                    text = "2025 01"
+
+                BudgetHeaderTab(
+                    dateType = dateType,
+                    selectedDate = selectedDate,
+                    onClickRight = onClickAfterDate,
+                    onClickLeft = onClickBeforeDate,
+                    onClickDate = onClickSelectedDate,
+                    modifier = Modifier,
                 )
-
-
 
                 TabRow(
                     containerColor = White,
@@ -124,20 +163,20 @@ fun BudgetScreen(
                     }
                 }
 
-
                 HorizontalDivider(
                     thickness = 0.5.dp,
                     color = Surface08
                 )
                 when(tabIndex) {
                     0 -> {
+                        onClickTab(BudgetDateType.MONTH)
                         BudgetDailyRoute()
                     }
                     1 -> {
-
+                        onClickTab(BudgetDateType.YEAR)
                     }
                     2 -> {
-
+                        onClickTab(BudgetDateType.MONTH)
                     }
                 }
             }

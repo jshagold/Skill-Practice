@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -23,7 +24,8 @@ fun DatePickerModal(
     val currentDateTime = initialLocalDateTime ?: LocalDateTime.now()
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = currentDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        initialSelectedDateMillis = currentDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+
     )
 
     DatePickerDialog(

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.market.domain.model.Budget
+import com.example.market.domain.model.enums.BudgetDateType
 import com.example.market.domain.usecase.BudgetUseCase
 import com.example.market.present.ui.budget.state.BudgetUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 
@@ -38,9 +40,69 @@ class BudgetViewModel @Inject constructor(
         }
     }
 
-    fun inputBudget(budget: Budget) {
-//        budgetUseCase.inputBudget()
+
+    /**
+     *
+     */
+
+    fun selectDate(date: LocalDate) {
+        _uiState.update {
+            it.copy(
+                selectedDate = date
+            )
+        }
     }
+
+    fun setBeforeDate() {
+        when(uiState.value.dateType) {
+            BudgetDateType.YEAR -> {
+                selectDate(uiState.value.selectedDate.minusYears(1))
+            }
+            BudgetDateType.MONTH -> {
+                selectDate(uiState.value.selectedDate.minusMonths(1))
+            }
+            BudgetDateType.DAY -> {
+                selectDate(uiState.value.selectedDate.minusDays(1))
+            }
+        }
+    }
+
+    fun setAfterDate() {
+        when(uiState.value.dateType) {
+            BudgetDateType.YEAR -> {
+                selectDate(uiState.value.selectedDate.plusYears(1))
+            }
+            BudgetDateType.MONTH -> {
+                selectDate(uiState.value.selectedDate.plusMonths(1))
+            }
+            BudgetDateType.DAY -> {
+                selectDate(uiState.value.selectedDate.plusDays(1))
+            }
+        }
+    }
+
+
+    fun openCloseMonthPicker(value: Boolean) {
+        _uiState.update {
+            it.copy(
+                isOpenMonthPicker = value
+            )
+        }
+    }
+
+    fun changeBudgetDateType(dateType: BudgetDateType) {
+        _uiState.update {
+            it.copy(
+                dateType = dateType
+            )
+        }
+    }
+
+
+    /**
+     *
+     */
+
 
     private fun getAllBudget() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -61,13 +123,6 @@ class BudgetViewModel @Inject constructor(
 
     }
 
-    fun getPositiveBudget() {
-        budgetUseCase.getPositiveBudget()
-    }
-
-    fun getNegativeBudget() {
-        budgetUseCase.getNegativeBudget()
-    }
 
     fun getTotalIncome() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,11 +140,6 @@ class BudgetViewModel @Inject constructor(
                 .launchIn(viewModelScope)
         }
     }
-
-    fun getRemainBalance() {
-        budgetUseCase.getRemainBalance()
-    }
-
 
 
 }

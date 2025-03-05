@@ -1,6 +1,7 @@
 package com.example.market.present.ui.budget.screen
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.market.domain.model.Budget
 import com.example.market.present.ui.budget.component.BudgetInfo
+import com.example.market.present.ui.budget.component.CalculatedRow
 import com.example.market.present.ui.budget.viewmodel.BudgetDailyViewModel
 
 @Preview
@@ -48,14 +50,8 @@ fun BudgetDailyScreen(
     Column(
         modifier = modifier
     ) {
-        Text(
-            text = "Budget"
-        )
-        Text(
-            text = "total : $total"
-        )
-        Text(
-            text = "balance : $balance"
+        CalculatedRow(
+            modifier = Modifier
         )
 
         LazyColumn(
