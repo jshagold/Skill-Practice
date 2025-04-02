@@ -4,17 +4,27 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 fun main(args: Array<String>) {
-    val br = BufferedReader(InputStreamReader(System.`in`))
+//    val br = BufferedReader(InputStreamReader(System.`in`))
+//
+//    br.readLine()
+//    val numList = br.readLine().split(" ").map { it.toInt() }
+//    val signCount = br.readLine().split(" ").map { it.toInt() }
+//    BJ14888().main(numList, signCount)
 
-    br.readLine()
-    val numList = br.readLine().split(" ").map { it.toInt() }
-    val signCount = br.readLine().split(" ").map { it.toInt() }
-    BJ14888().main(numList, signCount)
+    solve1()
 }
 
 
 fun solve1() {
-//    val br = BufferedReader(InputStreamReader(System.`in`))
+    val br = BufferedReader(InputStreamReader(System.`in`))
+
+    val n = br.readLine().toInt()
+    val board = mutableListOf<List<Int>>()
+    repeat(n) {
+        val a = br.readLine().split(" ").map { it.toInt() }
+        board.add(a)
+    }
+    BJ14889().main(board)
 
 //    val (x, target) = readln().split(" ").map { it.toInt() }
 //    val cardList = readln().split(" ").map { it.toInt() }
