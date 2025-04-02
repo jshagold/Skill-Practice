@@ -24,11 +24,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.market.R
+import com.example.market.present.theme.ExpenseTheme
+import com.example.market.present.theme.IncomeTheme
 import com.example.market.present.utils.extension.noRippleClickable
+
+
+@Preview
+@Composable
+fun PreviewBudgetInfo() {
+    BudgetInfo(
+        budgetId = 1L,
+        categoryName = "",
+        budget = 0f,
+        memo = "",
+        datetime = "",
+    )
+}
+
 
 @Composable
 fun BudgetInfo(
@@ -83,7 +100,7 @@ fun BudgetInfo(
             )
             Text(
                 text = "금액 : $budget",
-                color = if(budget >= 0) Color.Red else Color.Blue,
+                color = if(budget >= 0) IncomeTheme else ExpenseTheme,
                 modifier = Modifier
                     .constrainAs(budgetComponent) {
                         top.linkTo(categoryComponent.bottom)

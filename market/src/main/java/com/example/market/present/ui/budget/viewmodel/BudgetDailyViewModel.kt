@@ -1,6 +1,7 @@
 package com.example.market.present.ui.budget.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.market.domain.model.Budget
@@ -33,14 +34,21 @@ class BudgetDailyViewModel @Inject constructor(
     val uiState: StateFlow<BudgetDailyUiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            val now = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))
-            getAllBudget(now)
+        setSelectedDate(LocalDate.now())
+    }
+
+    fun setSelectedDate(date: LocalDate) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val dateString = date.format(DateTimeFormatter.ofPattern("yyyyMM"))
+
             getTotalIncome()
+
+            getTotalIncomeByMonth(dateString)
+            getAllBudget(dateString)
         }
     }
 
-    fun getAllBudget(month: String) {
+    private fun getAllBudget(month: String) {
         viewModelScope.launch(Dispatchers.IO) {
             budgetUseCase.getAllBudgetByMonthSortedByDay(month)
                 .onStart {  }
@@ -57,19 +65,29 @@ class BudgetDailyViewModel @Inject constructor(
         }
     }
 
-    fun getPositiveBudget() {
-        budgetUseCase.getPositiveBudget()
-    }
-
-    fun getNegativeBudget() {
-        budgetUseCase.getNegativeBudget()
-    }
-
-    fun getTotalIncome() {
+    private fun getTotalIncome() {
         viewModelScope.launch(Dispatchers.IO) {
             budgetUseCase.getTotalIncome()
                 .onStart {  }
                 .onEach { totalIncome ->
+                    _uiState.update {
+                        it.copy(
+                            allIncome = totalIncome
+                        )
+                    }
+                }
+                .onCompletion {  }
+                .catch {  }
+                .launchIn(viewModelScope)
+        }
+    }
+
+    private fun getTotalIncomeByMonth(month: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            budgetUseCase.getTotalIncomeByMonth(month)
+                .onStart {  }
+                .onEach { totalIncome ->
+                    Log.e("TAG", "getTotalIncomeByMonth: totalincome $totalIncome", )
                     _uiState.update {
                         it.copy(
                             totalIncome = totalIncome
@@ -80,10 +98,6 @@ class BudgetDailyViewModel @Inject constructor(
                 .catch {  }
                 .launchIn(viewModelScope)
         }
-    }
-
-    fun getRemainBalance() {
-        budgetUseCase.getRemainBalance()
     }
 
 }

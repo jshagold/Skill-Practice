@@ -170,7 +170,9 @@ fun BudgetScreen(
                 when(tabIndex) {
                     0 -> {
                         onClickTab(BudgetDateType.MONTH)
-                        BudgetDailyRoute()
+                        BudgetDailyRoute(
+                            selectedDate = selectedDate
+                        )
                     }
                     1 -> {
                         onClickTab(BudgetDateType.YEAR)

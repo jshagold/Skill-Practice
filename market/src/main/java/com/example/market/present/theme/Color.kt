@@ -32,3 +32,11 @@ val Surface05 = Color(0xFF636366)
 val Surface06 = Color(0xFF8E8E93)
 val Surface07 = Color(0xFFAEAEB2)
 val Surface08 = Color(0xFFDADADA)
+val Surface09 = Color(0xFFECECEC)
+val Surface10 = Color(0xFFF7F7F7)
+
+
+
+val ProgressBg = Color(0xFFF8F8F8)
+val ProgressOrange = Color(0xFFFC6D25)
+val ProgressOrangeBg = Color(0x3DFC6D25)
